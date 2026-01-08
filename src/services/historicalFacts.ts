@@ -11,9 +11,14 @@ export class HistoricalFactsService {
    * Get events that happened on the current date in history
    */
   async getTodayInHistory(): Promise<HistoricalEvent[]> {
-    const today = new Date();
-    const month = today.getMonth() + 1; // JavaScript months are 0-indexed
-    const day = today.getDate();
+    // Get current date in PST (UTC-8) / PDT (UTC-7)
+    const now = new Date();
+
+    // Convert to PST/PDT by using Los Angeles timezone
+    const pstDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+
+    const month = pstDate.getMonth() + 1; // JavaScript months are 0-indexed
+    const day = pstDate.getDate();
 
     return this.getEventsForDate(month, day);
   }
