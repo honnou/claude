@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>History in Music</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .playlist-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .playlist-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .playlist-description {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #667eea;
+            margin-bottom: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-item {
+            background: #f8f9fa;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .event-year {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .event-text {
+            margin-top: 8px;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        .event-location {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .genre-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .genre-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .track-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .track-number {
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .track-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .track-name {
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-artist {
+            color: #666;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .error {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .generate-btn {
+                padding: 16px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 History in Music</h1>
+            <p class="subtitle">Daily playlists inspired by historical events</p>
+        </header>
+
+        <div class="card">
+            <button class="generate-btn" id="generateBtn" onclick="generatePlaylist()">
+                Generate Today's Playlist
+            </button>
+        </div>
+
+        <div id="loading" class="card loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Discovering history and finding music...</p>
+        </div>
+
+        <div id="error" class="card error" style="display: none;">
+            <strong>Error:</strong> <span id="errorMessage"></span>
+        </div>
+
+        <div id="results" class="results">
+            <div class="card">
+                <div class="playlist-header">
+                    <h2 class="playlist-title" id="playlistTitle"></h2>
+                    <p class="playlist-description" id="playlistDescription"></p>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 class="section-title">📜 Historical Events</h3>
+                    <div id="eventsList"></div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 class="section-title">🎸 Music Genres</h3>
+                    <div class="genre-list" id="genresList"></div>
+                </div>
+
+                <div>
+                    <h3 class="section-title">
+                        🎧 Tracks
+                        <span id="demoModeBadge" class="demo-badge" style="display: none;">DEMO</span>
+                    </h3>
+                    <div id="tracksList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function generatePlaylist() {
+            const btn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+
+            // Hide previous results and errors
+            results.classList.remove('show');
+            error.style.display = 'none';
+
+            // Show loading
+            btn.disabled = true;
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/generate-playlist');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to generate playlist');
+                }
+
+                // Hide loading
+                loading.style.display = 'none';
+
+                // Update UI with results
+                displayResults(data.data);
+
+                // Show results
+                results.classList.add('show');
+            } catch (err) {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                document.getElementById('errorMessage').textContent = err.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            // Playlist header
+            document.getElementById('playlistTitle').textContent = data.playlistName;
+            document.getElementById('playlistDescription').textContent = data.playlistDescription;
+
+            // Demo mode badge
+            document.getElementById('demoModeBadge').style.display = data.demoMode ? 'inline-block' : 'none';
+
+            // Events list
+            const eventsList = document.getElementById('eventsList');
+            eventsList.innerHTML = data.events.map(event => `
+                <div class="event-item">
+                    <div class="event-year">${event.year}</div>
+                    <div class="event-text">${event.text}</div>
+                    ${event.region ? `
+                        <div class="event-location">
+                            📍 ${event.region}${event.country ? ` - ${event.country}` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            // Genres list
+            const genresList = document.getElementById('genresList');
+            genresList.innerHTML = data.genres.map(genre => `
+                <div class="genre-tag">${genre.genre}</div>
+            `).join('');
+
+            // Tracks list
+            const tracksList = document.getElementById('tracksList');
+            tracksList.innerHTML = data.tracks.map((track, index) => `
+                <div class="track-item">
+                    <div class="track-number">${index + 1}</div>
+                    <div class="track-info">
+                        <div class="track-name">${track.attributes.name}</div>
+                        <div class="track-artist">${track.attributes.artistName}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Auto-generate on page load for better mobile experience
+        window.addEventListener('load', () => {
+            // Wait a moment then auto-generate
+            setTimeout(() => {
+                // Uncomment to auto-generate on load:
+                // generatePlaylist();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

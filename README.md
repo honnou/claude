@@ -36,7 +36,30 @@ cp .env.example .env
 
 ## Usage
 
-### Demo Mode (No API Credentials Required)
+### 🌐 Web App (Best for iPhone/Mobile)
+
+The easiest way to use this tool, especially on iPhone or mobile devices:
+
+```bash
+npm install
+npm run web
+```
+
+Then:
+- **On your computer**: Open http://localhost:3000 in your browser
+- **On your iPhone** (same WiFi network):
+  1. Find your computer's local IP address
+     - Mac: System Preferences → Network
+     - Windows: Run `ipconfig` in terminal
+     - Linux: Run `hostname -I`
+  2. Open Safari on your iPhone
+  3. Go to `http://[YOUR_IP]:3000` (e.g., `http://192.168.1.100:3000`)
+  4. Tap "Generate Today's Playlist"
+  5. Add to home screen for app-like experience (Safari → Share → Add to Home Screen)
+
+The web interface is mobile-optimized and works great on iPhone!
+
+### 💻 Command Line Mode
 
 Run the tool without Apple Music API credentials to see how it works:
 
