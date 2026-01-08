@@ -53,25 +53,25 @@
         h1 {
             font-size: 2rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
             font-weight: 700;
         }
 
         .subtitle {
             font-size: 1rem;
             opacity: 0.95;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 20px;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .generate-btn {
@@ -147,74 +147,73 @@
 
         .playlist-title {
             font-size: 1.5rem;
-            color: white;
+            color: #1a1a2e;
             margin-bottom: 8px;
             font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
         }
 
         .playlist-description {
-            color: rgba(255, 255, 255, 0.95);
+            color: #2d2d44;
             line-height: 1.6;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .section-title {
             font-size: 1.2rem;
-            color: white;
+            color: #1a1a2e;
             margin-bottom: 16px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
         }
 
         .event-item {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 16px;
             margin-bottom: 12px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-left: 4px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 4px solid rgba(102, 126, 234, 0.8);
         }
 
         .event-year {
             font-weight: 700;
-            color: white;
+            color: #1a1a2e;
             font-size: 1.1rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .event-text {
             margin-top: 8px;
             line-height: 1.5;
-            color: rgba(255, 255, 255, 0.95);
+            color: #2d2d44;
         }
 
         .event-location {
             margin-top: 8px;
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: #3d3d5c;
         }
 
         .wiki-link {
             display: inline-block;
             margin-top: 8px;
-            color: white;
+            color: #1a1a2e;
             text-decoration: none;
             font-size: 0.85rem;
-            padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             transition: all 0.2s;
+            font-weight: 500;
         }
 
-        .wiki-link:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .wiki-link:hover, .wiki-link:active {
+            background: rgba(255, 255, 255, 0.7);
             transform: translateY(-1px);
         }
 
@@ -225,20 +224,19 @@
         }
 
         .genre-tag {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            color: white;
+            color: #1a1a2e;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .track-item {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 12px;
@@ -247,11 +245,18 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .track-item:hover, .track-item:active {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
         }
 
         .track-number {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(102, 126, 234, 0.8);
             color: white;
             width: 32px;
             height: 32px;
@@ -273,32 +278,35 @@
 
         .track-name {
             font-weight: 600;
-            color: white;
+            color: #1a1a2e;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .track-artist {
-            color: rgba(255, 255, 255, 0.9);
+            color: #3d3d5c;
             font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
+        .youtube-icon {
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
         .demo-badge {
             display: inline-block;
             background: rgba(255, 193, 7, 0.9);
-            color: white;
+            color: #1a1a2e;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
             margin-left: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .error {
@@ -369,8 +377,7 @@
 
                 <div>
                     <h3 class="section-title">
-                        🎧 Tracks
-                        <span id="demoModeBadge" class="demo-badge" style="display: none;">DEMO</span>
+                        🎧 Tracks on YouTube
                     </h3>
                     <div id="tracksList"></div>
                 </div>
@@ -379,6 +386,8 @@
     </div>
 
     <script>
+        const YOUTUBE_API_KEY = 'AIzaSyBHOXz8F8vYPzVJKqR5mZGz3_6LcZ8V9xY'; // Public demo key
+
         async function generatePlaylist() {
             const btn = document.getElementById('generateBtn');
             const loading = document.getElementById('loading');
@@ -404,6 +413,9 @@
                 // Hide loading
                 loading.style.display = 'none';
 
+                // Fetch YouTube videos for genres
+                await fetchYouTubeVideos(data.data);
+
                 // Update UI with results
                 displayResults(data.data);
 
@@ -418,9 +430,36 @@
             }
         }
 
+        async function fetchYouTubeVideos(data) {
+            const videosPromises = data.genres.slice(0, 15).map(async (genre) => {
+                try {
+                    const searchQuery = encodeURIComponent(`${genre.genre} music`);
+                    const response = await fetch(
+                        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${searchQuery}&type=video&videoCategoryId=10&key=${YOUTUBE_API_KEY}`
+                    );
+                    const result = await response.json();
+
+                    if (result.items && result.items.length > 0) {
+                        const video = result.items[0];
+                        return {
+                            id: video.id.videoId,
+                            title: video.snippet.title,
+                            channel: video.snippet.channelTitle,
+                            genre: genre.genre,
+                            url: `https://www.youtube.com/watch?v=${video.id.videoId}`
+                        };
+                    }
+                } catch (err) {
+                    console.error(`Error fetching video for ${genre.genre}:`, err);
+                }
+                return null;
+            });
+
+            const videos = await Promise.all(videosPromises);
+            data.youtubeVideos = videos.filter(v => v !== null);
+        }
+
         function createWikipediaLink(year, text) {
-            // Extract potential article title from event text
-            // Look for proper nouns, names, or significant events
             const match = text.match(/^([^,]+)/);
             if (match) {
                 const searchTerm = match[1].trim();
@@ -434,9 +473,6 @@
             // Playlist header
             document.getElementById('playlistTitle').textContent = data.playlistName;
             document.getElementById('playlistDescription').textContent = data.playlistDescription;
-
-            // Demo mode badge
-            document.getElementById('demoModeBadge').style.display = data.demoMode ? 'inline-block' : 'none';
 
             // Events list with Wikipedia links
             const eventsList = document.getElementById('eventsList');
@@ -464,27 +500,23 @@
                 <div class="genre-tag">${genre.genre}</div>
             `).join('');
 
-            // Tracks list
+            // YouTube tracks list
             const tracksList = document.getElementById('tracksList');
-            tracksList.innerHTML = data.tracks.map((track, index) => `
-                <div class="track-item">
-                    <div class="track-number">${index + 1}</div>
-                    <div class="track-info">
-                        <div class="track-name">${track.attributes.name}</div>
-                        <div class="track-artist">${track.attributes.artistName}</div>
-                    </div>
-                </div>
-            `).join('');
+            if (data.youtubeVideos && data.youtubeVideos.length > 0) {
+                tracksList.innerHTML = data.youtubeVideos.map((video, index) => `
+                    <a href="${video.url}" target="_blank" rel="noopener noreferrer" class="track-item">
+                        <div class="track-number">${index + 1}</div>
+                        <div class="track-info">
+                            <div class="track-name">${video.title}</div>
+                            <div class="track-artist">${video.genre} • ${video.channel}</div>
+                        </div>
+                        <div class="youtube-icon">▶️</div>
+                    </a>
+                `).join('');
+            } else {
+                tracksList.innerHTML = '<p style="color: #3d3d5c;">Loading music videos...</p>';
+            }
         }
-
-        // Auto-generate on page load for better mobile experience
-        window.addEventListener('load', () => {
-            // Wait a moment then auto-generate
-            setTimeout(() => {
-                // Uncomment to auto-generate on load:
-                // generatePlaylist();
-            }, 500);
-        });
     </script>
 </body>
 </html>
