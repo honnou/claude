@@ -198,9 +198,15 @@
             color: #3d3d5c;
         }
 
-        .wiki-link {
+        .event-links {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .wiki-link, .music-link {
             display: inline-block;
-            margin-top: 8px;
             color: #1a1a2e;
             text-decoration: none;
             font-size: 0.85rem;
@@ -212,9 +218,63 @@
             font-weight: 500;
         }
 
-        .wiki-link:hover, .wiki-link:active {
+        .wiki-link:hover, .wiki-link:active,
+        .music-link:hover, .music-link:active {
             background: rgba(255, 255, 255, 0.7);
             transform: translateY(-1px);
+        }
+
+        .genre-timeline {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            overflow-x: auto;
+        }
+
+        .timeline-container {
+            display: flex;
+            gap: 12px;
+            min-width: max-content;
+            padding: 10px 0;
+        }
+
+        .timeline-era {
+            flex: 0 0 auto;
+            min-width: 150px;
+        }
+
+        .era-label {
+            font-size: 0.85rem;
+            color: #1a1a2e;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+        }
+
+        .era-genres {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .genre-pill {
+            background: rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            color: #1a1a2e;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            text-align: center;
+            white-space: nowrap;
         }
 
         .genre-list {
@@ -371,13 +431,15 @@
                 </div>
 
                 <div style="margin-bottom: 24px;">
-                    <h3 class="section-title">🎸 Music Genres</h3>
-                    <div class="genre-list" id="genresList"></div>
+                    <h3 class="section-title">🎸 Musical Journey Through Time</h3>
+                    <div class="genre-timeline">
+                        <div class="timeline-container" id="genreTimeline"></div>
+                    </div>
                 </div>
 
                 <div>
                     <h3 class="section-title">
-                        🎧 Listen on YouTube Music
+                        🎧 Full Playlist on YouTube Music
                     </h3>
                     <div id="tracksList"></div>
                 </div>
@@ -441,6 +503,25 @@
                     youtubeUrl: `https://www.youtube.com/results?search_query=${searchQuery}`
                 };
             });
+
+            // Map genres to events based on region/country
+            data.events.forEach(event => {
+                // Find genres that match this event's region or are from the same era
+                const matchingGenres = data.genres.filter(genre => {
+                    // Match by year/era
+                    const eventYear = event.year;
+                    if (eventYear < 1900 && genre.era === 'early') return true;
+                    if (eventYear >= 1920 && eventYear < 1950 && genre.era === '1920s-1940s') return true;
+                    if (eventYear >= 1950 && eventYear < 1970 && (genre.era === '1950s-1960s' || genre.era === '1960s-1970s')) return true;
+                    if (eventYear >= 1970 && eventYear < 1990 && (genre.era === '1970s-1980s' || genre.era === '1980s-1990s')) return true;
+                    if (eventYear >= 1990 && eventYear < 2010 && genre.era === '1990s-2000s') return true;
+                    if (eventYear >= 2010 && genre.era === 'modern') return true;
+                    return false;
+                });
+
+                // Assign 1-2 relevant genres to this event
+                event.associatedGenres = matchingGenres.slice(0, 2);
+            });
         }
 
         function createWikipediaLink(year, text) {
@@ -458,10 +539,24 @@
             document.getElementById('playlistTitle').textContent = data.playlistName;
             document.getElementById('playlistDescription').textContent = data.playlistDescription;
 
-            // Events list with Wikipedia links
+            // Events list with Wikipedia and music links
             const eventsList = document.getElementById('eventsList');
             eventsList.innerHTML = data.events.map(event => {
                 const wikiUrl = createWikipediaLink(event.year, event.text);
+
+                // Create music links for this event
+                let musicLinksHTML = '';
+                if (event.associatedGenres && event.associatedGenres.length > 0) {
+                    musicLinksHTML = event.associatedGenres.map(genre => {
+                        const searchQuery = encodeURIComponent(`${genre.genre} music`);
+                        const url = `https://music.youtube.com/search?q=${searchQuery}`;
+                        const genreName = genre.genre.charAt(0).toUpperCase() + genre.genre.slice(1);
+                        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="music-link">
+                            🎵 Listen to ${genreName} on YouTube
+                        </a>`;
+                    }).join('');
+                }
+
                 return `
                     <div class="event-item">
                         <div class="event-year">${event.year}</div>
@@ -471,18 +566,49 @@
                                 📍 ${event.region}${event.country ? ` - ${event.country}` : ''}
                             </div>
                         ` : ''}
-                        <a href="${wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-link">
-                            📖 Read on Wikipedia
-                        </a>
+                        <div class="event-links">
+                            ${musicLinksHTML}
+                            <a href="${wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-link">
+                                📖 Read on Wikipedia
+                            </a>
+                        </div>
                     </div>
                 `;
             }).join('');
 
-            // Genres list
-            const genresList = document.getElementById('genresList');
-            genresList.innerHTML = data.genres.map(genre => `
-                <div class="genre-tag">${genre.genre}</div>
-            `).join('');
+            // Create timeline grouped by era
+            const genreTimeline = document.getElementById('genreTimeline');
+            const genresByEra = {};
+
+            data.genres.forEach(genre => {
+                if (!genresByEra[genre.era]) {
+                    genresByEra[genre.era] = [];
+                }
+                genresByEra[genre.era].push(genre);
+            });
+
+            // Sort eras chronologically
+            const eraOrder = ['early', '1920s-1940s', '1950s-1960s', '1960s-1970s', '1970s-1980s', '1980s-1990s', '1990s-2000s', 'modern'];
+            const sortedEras = Object.keys(genresByEra).sort((a, b) => {
+                return eraOrder.indexOf(a) - eraOrder.indexOf(b);
+            });
+
+            genreTimeline.innerHTML = sortedEras.map(era => {
+                const genres = genresByEra[era];
+                // Remove duplicates
+                const uniqueGenres = [...new Set(genres.map(g => g.genre))];
+
+                return `
+                    <div class="timeline-era">
+                        <div class="era-label">${era}</div>
+                        <div class="era-genres">
+                            ${uniqueGenres.map(genre => `
+                                <div class="genre-pill">${genre}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             // YouTube tracks list
             const tracksList = document.getElementById('tracksList');
