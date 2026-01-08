@@ -362,7 +362,10 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:8080';
+        // Use relative URLs for API calls (works with both local and deployed versions)
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8080'
+            : '';
         let generatedCoverLetter = '';
 
         // Setup drag and drop for both upload areas

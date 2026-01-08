@@ -13,7 +13,27 @@ An intelligent tool that adapts your existing cover letter for new job opportuni
 
 ## 🚀 Quick Start
 
-### Option 1: Automatic Setup (Recommended)
+### ☁️ Option 1: Deploy to Cloud (Access from Anywhere!)
+
+**Best option for mobile use and accessing from multiple devices!**
+
+Deploy to Vercel's free tier for instant access from anywhere:
+
+```bash
+cd cover-letter-generator
+npm install -g vercel  # Install Vercel CLI (one-time)
+vercel                 # Deploy!
+```
+
+After deployment:
+- You'll get a URL like `https://your-app.vercel.app`
+- Access from **any device**, **anywhere**
+- Add to your iPhone/Android home screen for app-like experience
+- No computer needed after deployment!
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+
+### 💻 Option 2: Run Locally (Automatic Setup)
 
 **macOS/Linux:**
 ```bash
@@ -32,7 +52,7 @@ The script will automatically:
 2. Start the backend server
 3. Open the web interface in your browser
 
-### Option 2: Manual Setup
+### Option 3: Run Locally (Manual Setup)
 
 1. **Install Dependencies:**
    ```bash
