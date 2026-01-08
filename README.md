@@ -59,6 +59,49 @@ Then:
 
 The web interface is mobile-optimized and works great on iPhone!
 
+### ☁️ Deploy to Cloud (No Installation Required!)
+
+**Best option if you don't have Node.js installed on your computer!**
+
+Deploy to Vercel's free tier for instant access from anywhere:
+
+#### One-Time Setup:
+
+1. **Install Vercel CLI** (if you haven't already):
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy from this directory**:
+   ```bash
+   cd claude
+   vercel
+   ```
+
+3. **Follow the prompts**:
+   - Login to your Vercel account
+   - Link to existing project or create new one
+   - Accept the default settings
+   - Wait for deployment to complete
+
+4. **Get your URL**:
+   - Vercel will give you a URL like: `https://your-app.vercel.app`
+   - Open this URL on your iPhone - it works anywhere!
+   - Add to home screen for app-like experience
+
+#### Update Deployment:
+Whenever you make changes, just run:
+```bash
+vercel --prod
+```
+
+**Advantages:**
+- No computer needed after deployment
+- Works from anywhere (not just same WiFi)
+- Free hosting on Vercel
+- Automatic HTTPS
+- Perfect for iPhone usage
+
 ### 💻 Command Line Mode
 
 Run the tool without Apple Music API credentials to see how it works:

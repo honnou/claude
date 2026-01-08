@@ -61,13 +61,18 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`\n🎵 Historical Facts Music Playlist - Web App`);
-  console.log(`============================================`);
-  console.log(`\n🌐 Server running at: http://localhost:${PORT}`);
-  console.log(`\n📱 Open this URL on your iPhone (if on same network):`);
-  console.log(`   - Find your computer's local IP address`);
-  console.log(`   - Open http://[YOUR_IP]:${PORT} in Safari\n`);
-  console.log(`💡 Press Ctrl+C to stop the server\n`);
-});
+// Start server (only in development, Vercel handles this in production)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n🎵 Historical Facts Music Playlist - Web App`);
+    console.log(`============================================`);
+    console.log(`\n🌐 Server running at: http://localhost:${PORT}`);
+    console.log(`\n📱 Open this URL on your iPhone (if on same network):`);
+    console.log(`   - Find your computer's local IP address`);
+    console.log(`   - Open http://[YOUR_IP]:${PORT} in Safari\n`);
+    console.log(`💡 Press Ctrl+C to stop the server\n`);
+  });
+}
+
+// Export for Vercel
+export default app;
