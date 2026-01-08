@@ -15,10 +15,27 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg,
+                #667eea 0%,
+                #764ba2 15%,
+                #f093fb 30%,
+                #f5576c 45%,
+                #feca57 60%,
+                #48dbfb 75%,
+                #0abde3 90%,
+                #667eea 100%
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             padding: 20px;
             color: #333;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -36,20 +53,25 @@
         h1 {
             font-size: 2rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            font-weight: 700;
         }
 
         .subtitle {
             font-size: 1rem;
-            opacity: 0.9;
+            opacity: 0.95;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         }
 
         .card {
-            background: white;
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         .generate-btn {
@@ -58,12 +80,26 @@
             font-size: 1.1rem;
             font-weight: 600;
             color: white;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg,
+                rgba(102, 126, 234, 0.9) 0%,
+                rgba(118, 75, 162, 0.9) 25%,
+                rgba(245, 87, 108, 0.9) 50%,
+                rgba(254, 202, 87, 0.9) 75%,
+                rgba(72, 219, 251, 0.9) 100%
+            );
+            background-size: 200% 200%;
+            animation: buttonGradient 3s ease infinite;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes buttonGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .generate-btn:active {
@@ -78,12 +114,12 @@
         .loading {
             text-align: center;
             padding: 40px 20px;
-            color: #667eea;
+            color: white;
         }
 
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -111,49 +147,75 @@
 
         .playlist-title {
             font-size: 1.5rem;
-            color: #667eea;
+            color: white;
             margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
         }
 
         .playlist-description {
-            color: #666;
-            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .section-title {
             font-size: 1.2rem;
-            color: #667eea;
+            color: white;
             margin-bottom: 16px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         }
 
         .event-item {
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 16px;
             margin-bottom: 12px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 4px solid rgba(255, 255, 255, 0.8);
         }
 
         .event-year {
             font-weight: 700;
-            color: #667eea;
+            color: white;
             font-size: 1.1rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .event-text {
             margin-top: 8px;
             line-height: 1.5;
-            color: #444;
+            color: rgba(255, 255, 255, 0.95);
         }
 
         .event-location {
             margin-top: 8px;
             font-size: 0.9rem;
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .wiki-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s;
+        }
+
+        .wiki-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
         }
 
         .genre-list {
@@ -163,36 +225,45 @@
         }
 
         .genre-tag {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .track-item {
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 12px;
             margin-bottom: 8px;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .track-number {
-            background: #667eea;
+            background: rgba(255, 255, 255, 0.4);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
+            font-weight: 700;
+            font-size: 0.9rem;
             flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .track-info {
@@ -202,14 +273,15 @@
 
         .track-name {
             font-weight: 600;
-            color: #333;
+            color: white;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .track-artist {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
@@ -218,21 +290,25 @@
 
         .demo-badge {
             display: inline-block;
-            background: #ffc107;
-            color: #333;
+            background: rgba(255, 193, 7, 0.9);
+            color: white;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
             margin-left: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .error {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
+            background: rgba(255, 243, 205, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 193, 7, 0.5);
             color: #856404;
             padding: 16px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 16px;
         }
 
@@ -342,6 +418,18 @@
             }
         }
 
+        function createWikipediaLink(year, text) {
+            // Extract potential article title from event text
+            // Look for proper nouns, names, or significant events
+            const match = text.match(/^([^,]+)/);
+            if (match) {
+                const searchTerm = match[1].trim();
+                const encodedTerm = encodeURIComponent(searchTerm);
+                return `https://en.wikipedia.org/wiki/Special:Search?search=${encodedTerm}+${year}`;
+            }
+            return `https://en.wikipedia.org/wiki/${year}`;
+        }
+
         function displayResults(data) {
             // Playlist header
             document.getElementById('playlistTitle').textContent = data.playlistName;
@@ -350,19 +438,25 @@
             // Demo mode badge
             document.getElementById('demoModeBadge').style.display = data.demoMode ? 'inline-block' : 'none';
 
-            // Events list
+            // Events list with Wikipedia links
             const eventsList = document.getElementById('eventsList');
-            eventsList.innerHTML = data.events.map(event => `
-                <div class="event-item">
-                    <div class="event-year">${event.year}</div>
-                    <div class="event-text">${event.text}</div>
-                    ${event.region ? `
-                        <div class="event-location">
-                            📍 ${event.region}${event.country ? ` - ${event.country}` : ''}
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
+            eventsList.innerHTML = data.events.map(event => {
+                const wikiUrl = createWikipediaLink(event.year, event.text);
+                return `
+                    <div class="event-item">
+                        <div class="event-year">${event.year}</div>
+                        <div class="event-text">${event.text}</div>
+                        ${event.region ? `
+                            <div class="event-location">
+                                📍 ${event.region}${event.country ? ` - ${event.country}` : ''}
+                            </div>
+                        ` : ''}
+                        <a href="${wikiUrl}" target="_blank" rel="noopener noreferrer" class="wiki-link">
+                            📖 Read on Wikipedia
+                        </a>
+                    </div>
+                `;
+            }).join('');
 
             // Genres list
             const genresList = document.getElementById('genresList');
