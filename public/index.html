@@ -377,7 +377,7 @@
 
                 <div>
                     <h3 class="section-title">
-                        🎧 Tracks on YouTube
+                        🎧 Listen on YouTube Music
                     </h3>
                     <div id="tracksList"></div>
                 </div>
@@ -386,8 +386,6 @@
     </div>
 
     <script>
-        const YOUTUBE_API_KEY = 'AIzaSyBHOXz8F8vYPzVJKqR5mZGz3_6LcZ8V9xY'; // Public demo key
-
         async function generatePlaylist() {
             const btn = document.getElementById('generateBtn');
             const loading = document.getElementById('loading');
@@ -413,8 +411,8 @@
                 // Hide loading
                 loading.style.display = 'none';
 
-                // Fetch YouTube videos for genres
-                await fetchYouTubeVideos(data.data);
+                // Create YouTube search links for genres
+                createYouTubeTracks(data.data);
 
                 // Update UI with results
                 displayResults(data.data);
@@ -430,33 +428,19 @@
             }
         }
 
-        async function fetchYouTubeVideos(data) {
-            const videosPromises = data.genres.slice(0, 15).map(async (genre) => {
-                try {
-                    const searchQuery = encodeURIComponent(`${genre.genre} music`);
-                    const response = await fetch(
-                        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${searchQuery}&type=video&videoCategoryId=10&key=${YOUTUBE_API_KEY}`
-                    );
-                    const result = await response.json();
-
-                    if (result.items && result.items.length > 0) {
-                        const video = result.items[0];
-                        return {
-                            id: video.id.videoId,
-                            title: video.snippet.title,
-                            channel: video.snippet.channelTitle,
-                            genre: genre.genre,
-                            url: `https://www.youtube.com/watch?v=${video.id.videoId}`
-                        };
-                    }
-                } catch (err) {
-                    console.error(`Error fetching video for ${genre.genre}:`, err);
-                }
-                return null;
+        function createYouTubeTracks(data) {
+            // Create YouTube Music search links for each genre
+            data.youtubeVideos = data.genres.slice(0, 15).map((genre, index) => {
+                const searchQuery = encodeURIComponent(`${genre.genre} music playlist`);
+                return {
+                    id: `track-${index}`,
+                    title: `${genre.genre.charAt(0).toUpperCase() + genre.genre.slice(1)} Playlist`,
+                    genre: genre.genre,
+                    era: genre.era,
+                    url: `https://music.youtube.com/search?q=${searchQuery}`,
+                    youtubeUrl: `https://www.youtube.com/results?search_query=${searchQuery}`
+                };
             });
-
-            const videos = await Promise.all(videosPromises);
-            data.youtubeVideos = videos.filter(v => v !== null);
         }
 
         function createWikipediaLink(year, text) {
@@ -503,18 +487,18 @@
             // YouTube tracks list
             const tracksList = document.getElementById('tracksList');
             if (data.youtubeVideos && data.youtubeVideos.length > 0) {
-                tracksList.innerHTML = data.youtubeVideos.map((video, index) => `
-                    <a href="${video.url}" target="_blank" rel="noopener noreferrer" class="track-item">
+                tracksList.innerHTML = data.youtubeVideos.map((track, index) => `
+                    <a href="${track.url}" target="_blank" rel="noopener noreferrer" class="track-item">
                         <div class="track-number">${index + 1}</div>
                         <div class="track-info">
-                            <div class="track-name">${video.title}</div>
-                            <div class="track-artist">${video.genre} • ${video.channel}</div>
+                            <div class="track-name">${track.title}</div>
+                            <div class="track-artist">${track.genre} ${track.era ? `• ${track.era}` : ''}</div>
                         </div>
                         <div class="youtube-icon">▶️</div>
                     </a>
                 `).join('');
             } else {
-                tracksList.innerHTML = '<p style="color: #3d3d5c;">Loading music videos...</p>';
+                tracksList.innerHTML = '<p style="color: #3d3d5c;">No tracks available</p>';
             }
         }
     </script>
