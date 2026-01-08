@@ -1,8 +1,5 @@
 node_modules
-src
 .env
-.git
 *.log
 .DS_Store
 .vscode
-tsconfig.json
