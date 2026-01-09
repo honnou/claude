@@ -41,12 +41,63 @@ export class HistoricalFactsService {
         };
       });
 
-      // Return a selection of events (limit to 5-10 for variety)
-      return events.slice(0, 8);
+      // Select a diverse range of events across different time periods
+      return this.selectDiverseEvents(events);
     } catch (error) {
       console.warn('⚠️  Unable to fetch live historical events. Using sample data instead.\n');
       return this.getSampleEvents();
     }
+  }
+
+  /**
+   * Select a diverse mix of events from different eras
+   */
+  private selectDiverseEvents(events: HistoricalEvent[]): HistoricalEvent[] {
+    // Group events by era
+    const byEra: { [key: string]: HistoricalEvent[] } = {
+      'ancient': [],      // Before 1800
+      'industrial': [],   // 1800-1899
+      'early1900s': [],   // 1900-1949
+      'midcentury': [],   // 1950-1979
+      'modern': [],       // 1980-1999
+      'recent': []        // 2000-2020
+    };
+
+    events.forEach(event => {
+      if (event.year < 1800) byEra.ancient.push(event);
+      else if (event.year < 1900) byEra.industrial.push(event);
+      else if (event.year < 1950) byEra.early1900s.push(event);
+      else if (event.year < 1980) byEra.midcentury.push(event);
+      else if (event.year < 2000) byEra.modern.push(event);
+      else if (event.year <= 2020) byEra.recent.push(event);
+    });
+
+    // Select events from each era (prioritize recent events)
+    const selected: HistoricalEvent[] = [];
+
+    // Take 2 recent events (2000-2020)
+    selected.push(...byEra.recent.slice(0, 2));
+
+    // Take 2 modern events (1980-1999)
+    selected.push(...byEra.modern.slice(0, 2));
+
+    // Take 1-2 midcentury events (1950-1979)
+    selected.push(...byEra.midcentury.slice(0, 2));
+
+    // Take 1-2 early 1900s events (1900-1949)
+    selected.push(...byEra.early1900s.slice(0, 2));
+
+    // Take 1 industrial era event (1800-1899)
+    selected.push(...byEra.industrial.slice(0, 1));
+
+    // Take 1 ancient event (before 1800)
+    selected.push(...byEra.ancient.slice(0, 1));
+
+    // Sort by year (newest first for better engagement)
+    selected.sort((a, b) => b.year - a.year);
+
+    // Return up to 12 events
+    return selected.slice(0, 12);
   }
 
   /**
