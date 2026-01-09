@@ -135,9 +135,9 @@ Please output ONLY the new cover letter text, without any preamble or explanatio
 
         try:
             if ai_provider == 'anthropic' and ANTHROPIC_API_KEY:
-                anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-                message = anthropic_client.messages.create(
-                    model="claude-3-5-sonnet-20241022",
+                client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                message = client.messages.create(
+                    model="claude-3-haiku-20240307",
                     max_tokens=2000,
                     messages=[
                         {"role": "user", "content": prompt}
@@ -206,9 +206,9 @@ Please output ONLY the new resume text, without any preamble or explanation."""
 
         try:
             if ai_provider == 'anthropic' and ANTHROPIC_API_KEY:
-                anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-                message = anthropic_client.messages.create(
-                    model="claude-3-5-sonnet-20241022",
+                client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+                message = client.messages.create(
+                    model="claude-3-haiku-20240307",
                     max_tokens=2000,
                     messages=[
                         {"role": "user", "content": prompt}
