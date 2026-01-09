@@ -106,36 +106,43 @@ export class HistoricalFactsService {
   private getSampleEvents(): HistoricalEvent[] {
     return [
       {
-        year: 1935,
-        text: 'Elvis Presley, American singer and actor, "The King of Rock and Roll", was born in Tupelo, Mississippi',
+        year: 2011,
+        text: 'A gunman kills six people and wounds thirteen others, including U.S. Representative Gabrielle Giffords, in a mass shooting near Tucson, Arizona',
         date: '1/8',
         country: 'United States',
         region: 'North America'
       },
       {
-        year: 1642,
-        text: 'Galileo Galilei, Italian astronomer, physicist and engineer, dies in Florence, Italy at age 77',
-        date: '1/8',
-        country: 'Italy',
-        region: 'Europe'
-      },
-      {
-        year: 1959,
-        text: 'Charles de Gaulle is inaugurated as President of France',
-        date: '1/8',
-        country: 'France',
-        region: 'Europe'
-      },
-      {
-        year: 1918,
-        text: 'US President Woodrow Wilson outlines his Fourteen Points for peace after World War I',
+        year: 2016,
+        text: 'David Bowie, influential English rock musician and cultural icon, dies in New York City at age 69, two days after releasing his final album "Blackstar"',
         date: '1/8',
         country: 'United States',
         region: 'North America'
       },
       {
-        year: 1815,
-        text: 'Battle of New Orleans: American forces under Andrew Jackson defeat the British',
+        year: 2002,
+        text: 'President George W. Bush signs the No Child Left Behind Act into law, significantly expanding the federal role in public education',
+        date: '1/8',
+        country: 'United States',
+        region: 'North America'
+      },
+      {
+        year: 1998,
+        text: 'Ramzi Yousef is sentenced to life in prison for masterminding the 1993 World Trade Center bombing',
+        date: '1/8',
+        country: 'United States',
+        region: 'North America'
+      },
+      {
+        year: 1989,
+        text: 'Kegworth air disaster: British Midland Flight 92 crashes into an embankment on the M1 motorway in England, killing 47 people',
+        date: '1/8',
+        country: 'United Kingdom',
+        region: 'Europe'
+      },
+      {
+        year: 1982,
+        text: 'AT&T agrees to divest its 22 Bell System companies, ending the telecommunications monopoly',
         date: '1/8',
         country: 'United States',
         region: 'North America'
@@ -148,6 +155,27 @@ export class HistoricalFactsService {
         region: 'North America'
       },
       {
+        year: 1959,
+        text: 'Charles de Gaulle is inaugurated as President of France',
+        date: '1/8',
+        country: 'France',
+        region: 'Europe'
+      },
+      {
+        year: 1935,
+        text: 'Elvis Presley, American singer and actor, "The King of Rock and Roll", was born in Tupelo, Mississippi',
+        date: '1/8',
+        country: 'United States',
+        region: 'North America'
+      },
+      {
+        year: 1918,
+        text: 'US President Woodrow Wilson outlines his Fourteen Points for peace after World War I',
+        date: '1/8',
+        country: 'United States',
+        region: 'North America'
+      },
+      {
         year: 1889,
         text: 'Herman Hollerith receives a patent for his electric tabulating machine',
         date: '1/8',
@@ -155,11 +183,11 @@ export class HistoricalFactsService {
         region: 'North America'
       },
       {
-        year: 1926,
-        text: 'Abdul Aziz ibn Saud becomes King of Hejaz and renames it Saudi Arabia',
+        year: 1815,
+        text: 'Battle of New Orleans: American forces under Andrew Jackson defeat the British',
         date: '1/8',
-        country: 'Saudi Arabia',
-        region: 'Middle East'
+        country: 'United States',
+        region: 'North America'
       }
     ];
   }
