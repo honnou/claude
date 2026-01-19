@@ -13,6 +13,66 @@
       "footer": {
         "type": "footer",
         "settings": {}
+      },
+      "product-categories": {
+        "type": "product-categories",
+        "blocks": {
+          "category-1": {
+            "type": "category",
+            "settings": {
+              "category_title": "3D Printing",
+              "collection_url": "/collections/3d-printing"
+            }
+          },
+          "category-2": {
+            "type": "category",
+            "settings": {
+              "category_title": "Laser Engraving and Cutting",
+              "collection_url": "/collections/laser-engraving"
+            }
+          },
+          "category-3": {
+            "type": "category",
+            "settings": {
+              "category_title": "Direct to Film Printing",
+              "collection_url": "/collections/dtf-printing"
+            }
+          },
+          "category-4": {
+            "type": "category",
+            "settings": {
+              "category_title": "Sublimation Printing",
+              "collection_url": "/collections/sublimation-printing"
+            }
+          }
+        },
+        "block_order": ["category-1", "category-2", "category-3", "category-4"],
+        "settings": {
+          "heading": "Shop by Category"
+        }
+      },
+      "organization-buttons": {
+        "type": "organization-buttons",
+        "blocks": {
+          "organization-1": {
+            "type": "organization",
+            "settings": {
+              "organization_title": "Seasonal",
+              "collection_url": "/collections/seasonal"
+            }
+          },
+          "organization-2": {
+            "type": "organization",
+            "settings": {
+              "organization_title": "Clearance",
+              "collection_url": "/collections/clearance"
+            }
+          }
+        },
+        "block_order": ["organization-1", "organization-2"],
+        "settings": {
+          "heading": "Shop by Collection"
+        }
       }
     },
     "content_for_index": []

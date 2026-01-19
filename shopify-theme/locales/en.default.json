@@ -26,8 +26,8 @@
     },
     "tags": {
       "always": "Always In Stock",
-      "seasonal": "Seasonal Items",
-      "clearance": "Clearance Items"
+      "seasonal": "Seasonal Item",
+      "clearance": "Clearance Item"
     }
   },
   "cart": {
