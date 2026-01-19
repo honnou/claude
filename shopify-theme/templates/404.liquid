@@ -1,0 +1,27 @@
+<div class="error-page">
+  <div class="container">
+    <div class="error-content">
+      <h1 class="error-title">{{ 'general.404.title' | t }}</h1>
+      <p class="error-message">{{ 'general.404.subtext' | t }}</p>
+
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">Return to Homepage</a>
+
+        <div class="search-form-wrapper">
+          <p>Try searching for what you need:</p>
+          <form action="/search" method="get" class="search-form" role="search">
+            <input
+              type="search"
+              name="q"
+              placeholder="{{ 'general.search.placeholder' | t }}"
+              class="search-input"
+            >
+            <button type="submit" class="search-submit">
+              {{ 'general.search.submit' | t }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

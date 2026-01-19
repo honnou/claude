@@ -1,0 +1,80 @@
+{% paginate search.results by 20 %}
+
+<div class="search-page">
+  <div class="container">
+    <header class="search-header">
+      <h1 class="search-title">Search Results</h1>
+
+      <form action="/search" method="get" class="search-form" role="search">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+          class="search-input"
+        >
+        <button type="submit" class="search-submit">
+          {{ 'general.search.submit' | t }}
+        </button>
+      </form>
+
+      {%- if search.performed -%}
+        <p class="search-results-count">
+          {% if search.results_count == 0 %}
+            No results found for "{{ search.terms }}"
+          {% else %}
+            {{ search.results_count }} result{% if search.results_count > 1 %}s{% endif %} for "{{ search.terms }}"
+          {% endif %}
+        </p>
+      {%- endif -%}
+    </header>
+
+    {%- if search.results.size > 0 -%}
+      <div class="search-results">
+        {% for item in search.results %}
+          <div class="search-result-item">
+            {%- if item.object_type == 'product' -%}
+              <a href="{{ item.url }}" class="search-result-link">
+                <div class="search-result-image">
+                  {%- if item.featured_image -%}
+                    <img
+                      src="{{ item.featured_image | img_url: '200x200' }}"
+                      alt="{{ item.featured_image.alt | escape }}"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                </div>
+                <div class="search-result-info">
+                  <h3 class="search-result-title">{{ item.title }}</h3>
+                  <div class="search-result-price">{{ item.price | money }}</div>
+                </div>
+              </a>
+            {%- elsif item.object_type == 'article' -%}
+              <a href="{{ item.url }}" class="search-result-link">
+                <div class="search-result-info">
+                  <h3 class="search-result-title">{{ item.title }}</h3>
+                  <p class="search-result-excerpt">{{ item.excerpt_or_content | strip_html | truncate: 150 }}</p>
+                </div>
+              </a>
+            {%- elsif item.object_type == 'page' -%}
+              <a href="{{ item.url }}" class="search-result-link">
+                <div class="search-result-info">
+                  <h3 class="search-result-title">{{ item.title }}</h3>
+                  <p class="search-result-excerpt">{{ item.content | strip_html | truncate: 150 }}</p>
+                </div>
+              </a>
+            {%- endif -%}
+          </div>
+        {% endfor %}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <div class="pagination">
+          {{ paginate | default_pagination }}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% endpaginate %}

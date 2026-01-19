@@ -1,0 +1,41 @@
+{
+  "general": {
+    "shop_name": "Poly People Printing",
+    "search": {
+      "placeholder": "Search our products...",
+      "submit": "Search"
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you requested does not exist."
+    }
+  },
+  "header": {
+    "custom_service": "Custom/Service Orders"
+  },
+  "products": {
+    "categories": {
+      "3d_printing": "3D Printing",
+      "laser_engraving": "Laser Engraving and Cutting",
+      "dtf_printing": "Direct to Film Printing",
+      "sublimation": "Sublimation Printing"
+    },
+    "organization": {
+      "seasonal": "Seasonal",
+      "clearance": "Clearance"
+    },
+    "tags": {
+      "always": "Always In Stock",
+      "seasonal": "Seasonal Items",
+      "clearance": "Clearance Items"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Shopping Cart",
+      "remove": "Remove",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout"
+    }
+  }
+}

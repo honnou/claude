@@ -1,0 +1,88 @@
+<section class="organization-buttons">
+  <div class="container">
+    <h2 class="section-heading">{{ section.settings.heading }}</h2>
+
+    <div class="organization-grid">
+      {% for block in section.blocks %}
+        <div class="organization-item" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.collection_url }}" class="organization-link">
+            <div class="organization-image-wrapper">
+              {%- if block.settings.organization_image -%}
+                <img
+                  src="{{ block.settings.organization_image | img_url: '600x600' }}"
+                  alt="{{ block.settings.organization_title }}"
+                  class="organization-image"
+                  loading="lazy"
+                >
+              {%- else -%}
+                <div class="organization-image-placeholder">
+                  {{ block.settings.organization_title }}
+                </div>
+              {%- endif -%}
+            </div>
+            <h3 class="organization-title">{{ block.settings.organization_title }}</h3>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Organization Buttons",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Shop by Collection"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "organization",
+      "name": "Organization Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "organization_title",
+          "label": "Button Title"
+        },
+        {
+          "type": "image_picker",
+          "id": "organization_image",
+          "label": "Button Image"
+        },
+        {
+          "type": "url",
+          "id": "collection_url",
+          "label": "Collection URL",
+          "info": "Link to the collection page (e.g., /collections/seasonal)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Organization Buttons",
+      "blocks": [
+        {
+          "type": "organization",
+          "settings": {
+            "organization_title": "Seasonal",
+            "collection_url": "/collections/seasonal"
+          }
+        },
+        {
+          "type": "organization",
+          "settings": {
+            "organization_title": "Clearance",
+            "collection_url": "/collections/clearance"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

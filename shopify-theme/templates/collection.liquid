@@ -1,0 +1,96 @@
+{% paginate collection.products by 24 %}
+
+<div class="collection-page">
+  <div class="container">
+    <header class="collection-header">
+      <h1 class="collection-title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="collection-description">
+          {{ collection.description }}
+        </div>
+      {%- endif -%}
+    </header>
+
+    {%- if collection.products.size > 0 -%}
+      <div class="collection-filters">
+        <div class="filter-group">
+          <label for="sort-by">Sort by:</label>
+          <select id="sort-by" class="sort-select">
+            <option value="manual">Featured</option>
+            <option value="best-selling">Best Selling</option>
+            <option value="title-ascending">Alphabetically, A-Z</option>
+            <option value="title-descending">Alphabetically, Z-A</option>
+            <option value="price-ascending">Price, low to high</option>
+            <option value="price-descending">Price, high to low</option>
+            <option value="created-descending">Date, new to old</option>
+            <option value="created-ascending">Date, old to new</option>
+          </select>
+        </div>
+      </div>
+
+      {%- comment -%} Product Grid {%- endcomment -%}
+      <div class="product-grid">
+        {% for product in collection.products %}
+          <div class="product-item">
+            <a href="{{ product.url }}" class="product-link">
+              <div class="product-image-wrapper">
+                {%- if product.featured_image -%}
+                  <img
+                    src="{{ product.featured_image | img_url: '600x600' }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    class="product-image"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  <div class="product-image-placeholder">
+                    {{ 'product.no_image' | t }}
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} Product tags display {%- endcomment -%}
+                {%- if product.tags.size > 0 -%}
+                  <div class="product-tags">
+                    {% if product.tags contains 'always' %}
+                      <span class="product-tag product-tag--always">{{ 'products.tags.always' | t }}</span>
+                    {% endif %}
+                    {% if product.tags contains 'seasonal' %}
+                      <span class="product-tag product-tag--seasonal">{{ 'products.tags.seasonal' | t }}</span>
+                    {% endif %}
+                    {% if product.tags contains 'clearance' %}
+                      <span class="product-tag product-tag--clearance">{{ 'products.tags.clearance' | t }}</span>
+                    {% endif %}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              <div class="product-info">
+                <h3 class="product-title">{{ product.title }}</h3>
+                <div class="product-price">
+                  {%- if product.compare_at_price > product.price -%}
+                    <span class="price price--sale">{{ product.price | money }}</span>
+                    <span class="price price--compare">{{ product.compare_at_price | money }}</span>
+                  {%- else -%}
+                    <span class="price">{{ product.price | money }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <div class="pagination">
+          {{ paginate | default_pagination }}
+        </div>
+      {%- endif -%}
+
+    {%- else -%}
+      <div class="collection-empty">
+        <p>{{ 'collections.general.no_products' | t }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% endpaginate %}

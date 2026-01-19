@@ -1,0 +1,54 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h3 class="footer-heading">{{ shop.name }}</h3>
+        {%- if section.settings.footer_text -%}
+          <div class="footer-text">
+            {{ section.settings.footer_text }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="footer-payment">
+          {% unless shop.enabled_payment_types == empty %}
+            <span class="visually-hidden">{{ 'layout.footer.payment_methods' | t }}</span>
+            <ul class="payment-icons">
+              {% for type in shop.enabled_payment_types %}
+                <li class="payment-icon">
+                  {{ type | payment_type_svg_tag: class: 'icon' }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endunless %}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="footer-bottom">
+      <p class="copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "footer_text",
+      "label": "Footer Text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

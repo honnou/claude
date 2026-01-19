@@ -1,0 +1,102 @@
+<section class="product-categories">
+  <div class="container">
+    <h2 class="section-heading">{{ section.settings.heading }}</h2>
+
+    <div class="category-grid">
+      {% for block in section.blocks %}
+        <div class="category-item" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.collection_url }}" class="category-link">
+            <div class="category-image-wrapper">
+              {%- if block.settings.category_image -%}
+                <img
+                  src="{{ block.settings.category_image | img_url: '600x600' }}"
+                  alt="{{ block.settings.category_title }}"
+                  class="category-image"
+                  loading="lazy"
+                >
+              {%- else -%}
+                <div class="category-image-placeholder">
+                  {{ block.settings.category_title }}
+                </div>
+              {%- endif -%}
+            </div>
+            <h3 class="category-title">{{ block.settings.category_title }}</h3>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Categories",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Shop by Category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_title",
+          "label": "Category Title"
+        },
+        {
+          "type": "image_picker",
+          "id": "category_image",
+          "label": "Category Image"
+        },
+        {
+          "type": "url",
+          "id": "collection_url",
+          "label": "Collection URL",
+          "info": "Link to the collection page for this category"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Categories",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "category_title": "3D Printing",
+            "collection_url": "/collections/3d-printing"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_title": "Laser Engraving and Cutting",
+            "collection_url": "/collections/laser-engraving"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_title": "Direct to Film Printing",
+            "collection_url": "/collections/dtf-printing"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_title": "Sublimation Printing",
+            "collection_url": "/collections/sublimation-printing"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

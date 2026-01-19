@@ -1,0 +1,26 @@
+{
+  "current": {
+    "color_primary": "#1a1a1a",
+    "color_secondary": "#666666",
+    "color_accent": "#007bff",
+    "color_background": "#ffffff",
+    "color_text": "#333333",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {}
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      }
+    },
+    "content_for_index": [
+      "banner",
+      "search-bar",
+      "custom-service-button",
+      "product-categories",
+      "organization-buttons"
+    ]
+  }
+}

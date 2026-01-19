@@ -1,0 +1,107 @@
+<div class="product-page">
+  <div class="container">
+    <div class="product-single">
+      <div class="product-images">
+        <div class="product-featured-image">
+          {%- if product.featured_image -%}
+            <img
+              src="{{ product.featured_image | img_url: 'master' }}"
+              alt="{{ product.featured_image.alt | escape }}"
+              id="ProductFeaturedImage"
+            >
+          {%- else -%}
+            <div class="product-image-placeholder">
+              {{ 'product.no_image' | t }}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if product.images.size > 1 -%}
+          <div class="product-thumbnails">
+            {% for image in product.images %}
+              <div class="product-thumbnail">
+                <img
+                  src="{{ image | img_url: '200x200' }}"
+                  alt="{{ image.alt | escape }}"
+                  data-image-id="{{ image.id }}"
+                >
+              </div>
+            {% endfor %}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="product-details">
+        <h1 class="product-title">{{ product.title }}</h1>
+
+        <div class="product-price-wrapper">
+          <div class="product-price">
+            <span class="price" id="ProductPrice">{{ product.selected_or_first_available_variant.price | money }}</span>
+            {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+              <span class="price price--compare" id="ComparePrice">
+                {{ product.selected_or_first_available_variant.compare_at_price | money }}
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- if product.tags.size > 0 -%}
+          <div class="product-tags">
+            {% if product.tags contains 'always' %}
+              <span class="product-tag product-tag--always">{{ 'products.tags.always' | t }}</span>
+            {% endif %}
+            {% if product.tags contains 'seasonal' %}
+              <span class="product-tag product-tag--seasonal">{{ 'products.tags.seasonal' | t }}</span>
+            {% endif %}
+            {% if product.tags contains 'clearance' %}
+              <span class="product-tag product-tag--clearance">{{ 'products.tags.clearance' | t }}</span>
+            {% endif %}
+          </div>
+        {%- endif -%}
+
+        {%- if product.description != blank -%}
+          <div class="product-description">
+            {{ product.description }}
+          </div>
+        {%- endif -%}
+
+        <form action="/cart/add" method="post" enctype="multipart/form-data" class="product-form">
+          {%- unless product.has_only_default_variant -%}
+            <div class="product-variants">
+              {% for option in product.options_with_values %}
+                <div class="variant-option">
+                  <label for="Option{{ forloop.index }}">{{ option.name }}</label>
+                  <select id="Option{{ forloop.index }}" name="id" class="variant-select">
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}">{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endfor %}
+            </div>
+          {%- endunless -%}
+
+          <div class="product-quantity">
+            <label for="Quantity">Quantity</label>
+            <input type="number" id="Quantity" name="quantity" value="1" min="1">
+          </div>
+
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+          <button
+            type="submit"
+            name="add"
+            class="btn btn-primary add-to-cart"
+            {% unless product.available %}disabled{% endunless %}
+          >
+            {% if product.available %}
+              Add to Cart
+            {% else %}
+              Sold Out
+            {% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

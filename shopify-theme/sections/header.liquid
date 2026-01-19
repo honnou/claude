@@ -1,0 +1,62 @@
+<header class="site-header" role="banner">
+  {%- if section.settings.header_banner -%}
+    <div class="header-banner">
+      <img
+        src="{{ section.settings.header_banner | img_url: 'master' }}"
+        alt="{{ shop.name }}"
+        class="header-banner-image"
+        loading="eager"
+      >
+    </div>
+  {%- else -%}
+    <div class="header-banner header-banner--placeholder">
+      <h1 class="site-name">{{ shop.name }}</h1>
+    </div>
+  {%- endif -%}
+
+  <div class="header-search">
+    <form action="/search" method="get" class="search-form" role="search">
+      <input
+        type="search"
+        name="q"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        class="search-input"
+        aria-label="{{ 'general.search.placeholder' | t }}"
+      >
+      <button type="submit" class="search-submit">
+        <span class="visually-hidden">{{ 'general.search.submit' | t }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  {%- if section.settings.custom_service_url != blank -%}
+    <div class="custom-service-button-container">
+      <a href="{{ section.settings.custom_service_url }}" class="custom-service-button">
+        {{ 'header.custom_service' | t }}
+      </a>
+    </div>
+  {%- endif -%}
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "header_banner",
+      "label": "Header Banner Image",
+      "info": "Recommended: Full width banner, max 25% page height"
+    },
+    {
+      "type": "url",
+      "id": "custom_service_url",
+      "label": "Custom/Service Order Form URL"
+    }
+  ]
+}
+{% endschema %}
