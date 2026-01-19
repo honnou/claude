@@ -34,13 +34,17 @@
       </form>
     </div>
 
-    {%- if section.settings.custom_service_url != blank -%}
-      <div class="custom-service-button-container">
+    <div class="custom-service-button-container">
+      {% if section.settings.custom_service_url != blank %}
         <a href="{{ section.settings.custom_service_url }}" class="custom-service-button">
           {{ 'header.custom_service' | t }}
         </a>
-      </div>
-    {%- endif -%}
+      {% else %}
+        <a href="#custom-service" class="custom-service-button">
+          {{ 'header.custom_service' | t }}
+        </a>
+      {% endif %}
+    </div>
   </div>
 </header>
 

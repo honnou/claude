@@ -4,10 +4,34 @@
 
     <div class="category-grid">
       {% for block in section.blocks %}
-        <div class="category-item" {{ block.shopify_attributes }}>
+        {% assign collection_handle = block.settings.collection_url | split: '/collections/' | last | split: '/' | first %}
+        {% assign collection = collections[collection_handle] %}
+
+        <div class="category-item" {{ block.shopify_attributes }} data-category-index="{{ forloop.index }}">
           <a href="{{ block.settings.collection_url }}" class="category-link">
             <div class="category-image-wrapper">
-              {%- if block.settings.category_image -%}
+              {%- if section.settings.enable_slideshow and collection and collection.products.size > 0 -%}
+                <div class="category-slideshow" data-slideshow-id="category-{{ forloop.index }}">
+                  {% for product in collection.products limit: section.settings.slideshow_limit %}
+                    {%- if product.featured_image -%}
+                      <div class="slideshow-image {% if forloop.first %}active{% endif %}">
+                        <img
+                          src="{{ product.featured_image | img_url: '600x600' }}"
+                          alt="{{ product.title }}"
+                          class="category-image"
+                          loading="lazy"
+                        >
+                      </div>
+                    {%- endif -%}
+                  {% endfor %}
+
+                  {% if collection.products.size == 0 %}
+                    <div class="category-image-placeholder">
+                      {{ block.settings.category_title }}
+                    </div>
+                  {% endif %}
+                </div>
+              {%- elsif block.settings.category_image -%}
                 <img
                   src="{{ block.settings.category_image | img_url: '600x600' }}"
                   alt="{{ block.settings.category_title }}"
@@ -28,6 +52,33 @@
   </div>
 </section>
 
+<script>
+  if (typeof initCategorySlideshows === 'undefined') {
+    function initCategorySlideshows() {
+      const slideshows = document.querySelectorAll('.category-slideshow');
+
+      slideshows.forEach(slideshow => {
+        const slides = slideshow.querySelectorAll('.slideshow-image');
+        if (slides.length <= 1) return;
+
+        let currentIndex = 0;
+
+        setInterval(() => {
+          slides[currentIndex].classList.remove('active');
+          currentIndex = (currentIndex + 1) % slides.length;
+          slides[currentIndex].classList.add('active');
+        }, {{ section.settings.slideshow_speed | times: 1000 }});
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCategorySlideshows);
+    } else {
+      initCategorySlideshows();
+    }
+  }
+</script>
+
 {% schema %}
 {
   "name": "Product Categories",
@@ -37,6 +88,32 @@
       "id": "heading",
       "label": "Section Heading",
       "default": "Shop by Category"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slideshow",
+      "label": "Enable product slideshow",
+      "default": true,
+      "info": "Show product images from each collection as a slideshow"
+    },
+    {
+      "type": "range",
+      "id": "slideshow_limit",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "label": "Number of products to show",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "slideshow_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Slideshow speed",
+      "default": 3
     }
   ],
   "blocks": [

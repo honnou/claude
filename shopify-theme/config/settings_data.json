@@ -8,7 +8,9 @@
     "sections": {
       "header": {
         "type": "header",
-        "settings": {}
+        "settings": {
+          "custom_service_url": ""
+        }
       },
       "footer": {
         "type": "footer",
@@ -48,7 +50,10 @@
         },
         "block_order": ["category-1", "category-2", "category-3", "category-4"],
         "settings": {
-          "heading": "Shop by Category"
+          "heading": "Shop by Category",
+          "enable_slideshow": true,
+          "slideshow_limit": 5,
+          "slideshow_speed": 3
         }
       },
       "organization-buttons": {
