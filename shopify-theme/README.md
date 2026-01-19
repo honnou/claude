@@ -17,11 +17,10 @@ A custom Shopify theme built for Poly People Printing, featuring organized produ
 
 The theme follows a structured layout optimized for customer experience:
 
-1. **Header Banner** - Full-width business banner (max 25% viewport height)
-2. **Search Bar** - Prominent search functionality
-3. **Custom/Service Orders Button** - Direct link to order forms
-4. **Product Categories** - Visual grid showcasing all product categories
-5. **Organization Buttons** - Quick access to Seasonal and Clearance items
+1. **Header Banner** - Full-width business banner (max 15% viewport height)
+2. **Search Bar & Custom/Service Button** - Search functionality and custom order button on the same line, center aligned
+3. **Product Categories** - Visual grid showcasing all product categories
+4. **Organization Buttons** - Quick access to Seasonal and Clearance items
 
 ### Product Organization
 
@@ -150,7 +149,7 @@ To adjust the maximum banner height, modify in `assets/theme.css`:
 
 ```css
 .header-banner {
-  max-height: 25vh; /* Adjust as needed */
+  max-height: 15vh; /* Adjust as needed */
 }
 ```
 
