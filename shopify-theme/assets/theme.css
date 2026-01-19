@@ -61,10 +61,10 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Banner - max 25% height */
+/* Header Banner - max 15% height */
 .header-banner {
   width: 100%;
-  max-height: 25vh;
+  max-height: 15vh;
   overflow: hidden;
   display: flex;
   align-items: flex-start;
@@ -74,7 +74,7 @@ body {
 .header-banner-image {
   width: 100%;
   height: auto;
-  max-height: 25vh;
+  max-height: 15vh;
   object-fit: cover;
   object-position: top;
   display: block;
@@ -93,17 +93,26 @@ body {
   margin: 0;
 }
 
-/* Search Bar - immediately under banner */
-.header-search {
+/* Search Bar and Custom Button - on same line, center aligned */
+.header-search-and-custom {
   padding: var(--spacing-md);
   background: var(--color-background);
   border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 600px;
+  min-width: 280px;
 }
 
 .search-form {
   display: flex;
-  max-width: 600px;
-  margin: 0 auto;
   gap: var(--spacing-xs);
 }
 
@@ -138,12 +147,9 @@ body {
   background: #0056b3;
 }
 
-/* Custom/Service Button - under search bar */
+/* Custom/Service Button - on same line as search */
 .custom-service-button-container {
-  padding: var(--spacing-md);
-  text-align: center;
-  background: var(--color-background);
-  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .custom-service-button {
@@ -156,6 +162,7 @@ body {
   font-weight: 600;
   font-size: 1.1rem;
   transition: background-color 0.2s, transform 0.2s;
+  white-space: nowrap;
 }
 
 .custom-service-button:hover {
