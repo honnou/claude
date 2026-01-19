@@ -1,29 +1,2 @@
 {% section 'product-categories' %}
 {% section 'organization-buttons' %}
-
-<div class="container">
-  {% for block in section.blocks %}
-    <div {{ block.shopify_attributes }}>
-      {{ block.settings.html }}
-    </div>
-  {% endfor %}
-</div>
-
-{% schema %}
-{
-  "name": "Homepage",
-  "blocks": [
-    {
-      "type": "html",
-      "name": "Custom HTML",
-      "settings": [
-        {
-          "type": "html",
-          "id": "html",
-          "label": "HTML content"
-        }
-      ]
-    }
-  ]
-}
-{% endschema %}

@@ -9,11 +9,11 @@
 }
 
 :root {
-  --color-primary: #1a1a1a;
-  --color-secondary: #666666;
-  --color-accent: #007bff;
-  --color-background: #ffffff;
-  --color-text: #333333;
+  --color-primary: {{ settings.color_primary | default: '#1a1a1a' }};
+  --color-secondary: {{ settings.color_secondary | default: '#666666' }};
+  --color-accent: {{ settings.color_accent | default: '#007bff' }};
+  --color-background: {{ settings.color_background | default: '#ffffff' }};
+  --color-text: {{ settings.color_text | default: '#333333' }};
   --color-border: #e0e0e0;
   --spacing-xs: 8px;
   --spacing-sm: 16px;

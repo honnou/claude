@@ -15,12 +15,6 @@
         "settings": {}
       }
     },
-    "content_for_index": [
-      "banner",
-      "search-bar",
-      "custom-service-button",
-      "product-categories",
-      "organization-buttons"
-    ]
+    "content_for_index": []
   }
 }
