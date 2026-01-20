@@ -1,0 +1,5 @@
+# robots.txt for Nightrider Notary
+User-agent: *
+Allow: /
+
+Sitemap: https://nightridernotary.com/sitemap.xml

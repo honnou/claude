@@ -1,273 +1,348 @@
-# Historical Facts Music Playlist Generator
+# Nightrider Notary Website
 
-A Node.js tool that creates Apple Music playlists based on daily historical facts, featuring music genres from the regions where the events occurred.
+Professional after-hours mobile notary and secure document courier services website for Auburn, WA and surrounding areas.
+
+## Overview
+
+This is a modern Next.js website built with:
+- **Next.js 14** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **React Hook Form** for form handling
+- Optimized for **Vercel** deployment
 
 ## Features
 
-- Fetches historical events that happened on today's date
-- Analyzes the geographic location and time period of each event
-- Maps events to appropriate music genres based on region and era
-- Searches Apple Music for tracks matching those genres
-- Generates a curated playlist with a description of the historical context
+- 📱 Responsive design (mobile-first)
+- 🎨 Professional midnight blue color scheme
+- 🔍 SEO optimized with metadata and sitemap
+- 📝 Contact form with validation
+- 🗺️ Service area visualization
+- ⚡ Fast page loads and performance
+- 🔒 Security headers configured
 
-## How It Works
+## Pages
 
-1. **Fetch Historical Facts**: Uses Wikipedia's "On This Day" API to get events from history
-2. **Location Analysis**: Extracts geographic information (country/region) from event descriptions
-3. **Genre Mapping**: Maps regions and time periods to culturally relevant music genres
-   - Example: Events from 1960s Jamaica → reggae, ska
-   - Example: Events from 1920s USA → jazz, blues, swing
-4. **Music Search**: Searches Apple Music for tracks in the identified genres
-5. **Playlist Creation**: Generates a playlist with metadata describing the historical connection
+1. **Home** (`/`) - Hero section, service overview, why choose us, CTA
+2. **Services** (`/services`) - Detailed courier and notary service information
+3. **About** (`/about`) - Mission, values, credentials, service standards
+4. **Service Area** (`/service-area`) - Coverage map, cities served, hours
+5. **Contact** (`/contact`) - Contact form, FAQ, business hours
 
-## Installation
+## Getting Started
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd claude
+### Prerequisites
 
-# Install dependencies
-npm install
+- Node.js 18+ installed
+- npm or yarn package manager
 
-# Copy environment template
-cp .env.example .env
-```
+### Local Development
 
-## Usage
-
-### 🌐 Web App (Best for iPhone/Mobile)
-
-The easiest way to use this tool, especially on iPhone or mobile devices:
-
-```bash
-npm install
-npm run web
-```
-
-Then:
-- **On your computer**: Open http://localhost:3000 in your browser
-- **On your iPhone** (same WiFi network):
-  1. Find your computer's local IP address
-     - Mac: System Preferences → Network
-     - Windows: Run `ipconfig` in terminal
-     - Linux: Run `hostname -I`
-  2. Open Safari on your iPhone
-  3. Go to `http://[YOUR_IP]:3000` (e.g., `http://192.168.1.100:3000`)
-  4. Tap "Generate Today's Playlist"
-  5. Add to home screen for app-like experience (Safari → Share → Add to Home Screen)
-
-The web interface is mobile-optimized and works great on iPhone!
-
-### ☁️ Deploy to Cloud (No Installation Required!)
-
-**Best option if you don't have Node.js installed on your computer!**
-
-Deploy to Vercel's free tier for instant access from anywhere:
-
-#### One-Time Setup:
-
-1. **Install Vercel CLI** (if you haven't already):
+1. **Install dependencies:**
    ```bash
-   npm install -g vercel
+   npm install
    ```
 
-2. **Deploy from this directory**:
-   ```bash
-   cd claude
-   vercel
-   ```
-
-3. **Follow the prompts**:
-   - Login to your Vercel account
-   - Link to existing project or create new one
-   - Accept the default settings
-   - Wait for deployment to complete
-
-4. **Get your URL**:
-   - Vercel will give you a URL like: `https://your-app.vercel.app`
-   - Open this URL on your iPhone - it works anywhere!
-   - Add to home screen for app-like experience
-
-#### Update Deployment:
-Whenever you make changes, just run:
-```bash
-vercel --prod
-```
-
-**Advantages:**
-- No computer needed after deployment
-- Works from anywhere (not just same WiFi)
-- Free hosting on Vercel
-- Automatic HTTPS
-- Perfect for iPhone usage
-
-### 💻 Command Line Mode
-
-Run the tool without Apple Music API credentials to see how it works:
-
-```bash
-npm run dev
-```
-
-This will:
-- Fetch real historical events
-- Map them to music genres
-- Display sample track data (mock data, not real Apple Music tracks)
-
-### Full Mode (With Apple Music API)
-
-To use the full Apple Music integration:
-
-1. **Get Apple Music API Credentials**:
-   - Join the [Apple Developer Program](https://developer.apple.com)
-   - Create a MusicKit identifier and key at [developer.apple.com/account](https://developer.apple.com/account/)
-   - Download your private key (.p8 file)
-
-2. **Generate Developer Token**:
-
-   Install the JWT library:
-   ```bash
-   npm install jsonwebtoken
-   ```
-
-   Create a token generation script:
-   ```javascript
-   import jwt from 'jsonwebtoken';
-   import fs from 'fs';
-
-   const teamId = 'YOUR_TEAM_ID';
-   const keyId = 'YOUR_KEY_ID';
-   const privateKey = fs.readFileSync('path/to/AuthKey_KEYID.p8', 'utf8');
-
-   const token = jwt.sign({}, privateKey, {
-     algorithm: 'ES256',
-     expiresIn: '180d',
-     issuer: teamId,
-     header: {
-       alg: 'ES256',
-       kid: keyId
-     }
-   });
-
-   console.log('Developer Token:', token);
-   ```
-
-3. **Configure Environment**:
-
-   Edit `.env` and add your token:
-   ```
-   APPLE_DEVELOPER_TOKEN=your_generated_jwt_token
-   ```
-
-4. **Run the Tool**:
+2. **Run development server:**
    ```bash
    npm run dev
    ```
 
-## Example Output
+3. **Open browser:**
+   Navigate to `http://localhost:3000`
 
-```
-🎵 Historical Facts Music Playlist Generator
+### Build for Production
 
-📅 Fetching historical events for today...
-
-Found 8 historical events:
-
-1. 1776: The United States Declaration of Independence is signed...
-   📍 Region: North America (United States)
-
-2. 1865: Alice's Adventures in Wonderland is published in the United Kingdom...
-   📍 Region: Europe (United Kingdom)
-
-3. 1954: Elvis Presley records "That's All Right" at Sun Studio...
-   📍 Region: North America (United States)
-
-🎵 Mapping events to music genres...
-
-Selected 12 music genres:
-
-1. folk (early)
-2. rock and roll (1950s-1960s)
-3. british rock (1960s-1970s)
-...
-
-🔍 Searching for tracks...
-
-Found 24 tracks:
-
-1. "This Land Is Your Land" by Woody Guthrie
-2. "That's All Right" by Elvis Presley
-3. "A Day in the Life" by The Beatles
-...
-
-📝 Playlist: "History in Music: January 8"
-
-✅ Playlist generation complete!
+```bash
+npm run build
+npm start
 ```
 
-## Project Structure
+## Deployment to Vercel
 
-```
-claude/
-├── src/
-│   ├── services/
-│   │   ├── historicalFacts.ts    # Wikipedia API integration
-│   │   ├── genreMapping.ts       # Region/era to genre mapping
-│   │   └── appleMusicService.ts  # Apple Music API client
-│   ├── types/
-│   │   └── index.ts              # TypeScript type definitions
-│   ├── utils/
-│   │   └── tokenGenerator.ts     # Token generation utilities
-│   ├── playlistGenerator.ts      # Main playlist generation logic
-│   └── index.ts                  # CLI entry point
-├── package.json
-├── tsconfig.json
-└── .env.example
+### Step 1: Prepare Your Repository
+
+This site is ready to deploy to Vercel. Make sure all changes are committed:
+
+```bash
+git add .
+git commit -m "Initial Nightrider Notary website"
+git push -u origin claude/nightrider-notary-ae6Jq
 ```
 
-## Genre Mapping
+### Step 2: Deploy to Vercel
 
-The tool includes curated mappings for various regions and eras:
+**Option A: Using Vercel CLI (Recommended)**
 
-- **North America**: jazz, blues, rock and roll, hip hop, country
-- **Latin America**: salsa, bossa nova, reggaeton, tango
-- **Caribbean**: reggae, ska, dancehall, calypso
-- **Europe**: classical, progressive rock, electronic, britpop
-- **Africa**: afrobeat, highlife, afropop, amapiano
-- **Asia**: k-pop, j-pop, bollywood, traditional
-- And many more...
+1. Install Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
 
-Each region has era-specific genres (1920s-1940s, 1950s-1960s, etc.) to match the historical period.
+2. Login to Vercel:
+   ```bash
+   vercel login
+   ```
 
-## API References
+3. Deploy:
+   ```bash
+   vercel
+   ```
 
-- **Wikipedia "On This Day" API**: [wikimedia.org/api/rest_v1](https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday)
-- **Apple Music API**: [developer.apple.com/documentation/applemusicapi](https://developer.apple.com/documentation/applemusicapi/)
-- **MusicKit**: [developer.apple.com/musickit](https://developer.apple.com/musickit/)
+4. Follow prompts to link to your Vercel account
 
-## Limitations
+5. For production deployment:
+   ```bash
+   vercel --prod
+   ```
 
-- Apple Music API requires a paid Apple Developer account ($99/year)
-- Creating playlists requires user authorization (Music User Token)
-- Location extraction is heuristic-based and may not catch all geographic references
-- Genre mapping is curated and may not cover all regional music traditions
-- Rate limiting on Apple Music API (handled with delays between requests)
+**Option B: Using Vercel Dashboard**
+
+1. Go to [vercel.com](https://vercel.com)
+2. Click "Add New Project"
+3. Import your Git repository
+4. Vercel will auto-detect Next.js settings
+5. Click "Deploy"
+
+### Step 3: Configure Custom Domain (nightridernotary.com)
+
+Once deployed to Vercel:
+
+1. **In Vercel Dashboard:**
+   - Go to your project settings
+   - Click "Domains"
+   - Add `nightridernotary.com`
+   - Add `www.nightridernotary.com` (optional)
+   - Vercel will provide DNS records to add
+
+2. **In Namecheap (Your Domain Registrar):**
+
+   a. **Log in to Namecheap:**
+      - Go to [namecheap.com](https://namecheap.com)
+      - Navigate to Domain List
+      - Click "Manage" next to nightridernotary.com
+
+   b. **Update DNS Settings:**
+      - Go to "Advanced DNS" tab
+      - Remove existing A and CNAME records (if any)
+      - Add new records as provided by Vercel:
+
+      **For apex domain (nightridernotary.com):**
+      ```
+      Type: A Record
+      Host: @
+      Value: 76.76.21.21 (Vercel's IP - check Vercel dashboard for current IP)
+      TTL: Automatic
+      ```
+
+      **For www subdomain (www.nightridernotary.com):**
+      ```
+      Type: CNAME Record
+      Host: www
+      Value: cname.vercel-dns.com
+      TTL: Automatic
+      ```
+
+   c. **Save changes**
+
+3. **Verify Domain:**
+   - Back in Vercel, click "Verify" next to your domain
+   - DNS propagation can take 24-48 hours (usually much faster)
+   - You can check status at [dnschecker.org](https://dnschecker.org)
+
+### Step 4: Set Up Proton Email (isaiah@nightridernotary.com)
+
+**In Proton Mail:**
+
+1. Log in to [proton.me](https://proton.me)
+2. Go to Settings → Domains
+3. Click "Add Domain"
+4. Enter `nightridernotary.com`
+5. Proton will provide MX records
+
+**In Namecheap:**
+
+1. Go back to Advanced DNS for nightridernotary.com
+2. Add MX records provided by Proton:
+
+   ```
+   Type: MX Record
+   Host: @
+   Value: mail.protonmail.ch (or as provided by Proton)
+   Priority: 10
+   TTL: Automatic
+   ```
+
+   ```
+   Type: MX Record
+   Host: @
+   Value: mailsec.protonmail.ch (or as provided by Proton)
+   Priority: 20
+   TTL: Automatic
+   ```
+
+3. Add SPF record (TXT):
+   ```
+   Type: TXT Record
+   Host: @
+   Value: v=spf1 include:_spf.protonmail.ch ~all
+   TTL: Automatic
+   ```
+
+4. Add DKIM and DMARC records as provided by Proton
+
+5. Verify in Proton Mail settings
+
+**Create Email Address:**
+- In Proton: Settings → Addresses
+- Add `isaiah@nightridernotary.com`
+
+## Environment Variables
+
+Currently, this site doesn't require environment variables. However, when you integrate the contact form with an email service (like Resend, SendGrid, or Proton Bridge), you'll need to add:
+
+```env
+# .env.local (create this file locally, don't commit)
+EMAIL_SERVICE_API_KEY=your_api_key_here
+CONTACT_EMAIL_TO=isaiah@nightridernotary.com
+```
+
+## Contact Form Integration
+
+The contact form currently logs submissions to console. To make it functional:
+
+### Option 1: Using Vercel Forms (Simplest)
+
+1. No code changes needed
+2. Submissions appear in Vercel Dashboard
+3. Can forward to email
+
+### Option 2: Using Resend (Recommended for Production)
+
+1. Sign up at [resend.com](https://resend.com)
+2. Verify your domain
+3. Get API key
+4. Install package: `npm install resend`
+5. Update `src/components/ContactForm.tsx` to call API route
+6. Create API route at `src/app/api/contact/route.ts`
+
+Example API route:
+```typescript
+import { Resend } from 'resend'
+import { NextResponse } from 'next/server'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export async function POST(request: Request) {
+  const data = await request.json()
+
+  await resend.emails.send({
+    from: 'website@nightridernotary.com',
+    to: 'isaiah@nightridernotary.com',
+    subject: `New Contact Form: ${data.service}`,
+    html: `<p>From: ${data.name} (${data.email})</p>...`
+  })
+
+  return NextResponse.json({ success: true })
+}
+```
+
+## SEO Optimization
+
+The site includes:
+- ✅ Semantic HTML structure
+- ✅ Meta tags for social sharing (Open Graph)
+- ✅ Sitemap.xml generation
+- ✅ Robots.txt
+- ✅ Structured data for local business (can be enhanced)
+- ✅ Mobile-responsive design
+- ✅ Fast loading times
+
+### Additional SEO Recommendations
+
+1. **Google Business Profile:**
+   - Create listing for "Nightrider Notary"
+   - Add Auburn, WA location
+   - Link to website
+
+2. **Local Citations:**
+   - Add to Yelp, Yellow Pages, etc.
+   - Ensure NAP (Name, Address, Phone) consistency
+
+3. **Schema Markup:**
+   Consider adding LocalBusiness schema to layout:
+   ```json
+   {
+     "@context": "https://schema.org",
+     "@type": "LocalBusiness",
+     "name": "Nightrider Notary",
+     "image": "https://nightridernotary.com/og-image.png",
+     "@id": "https://nightridernotary.com",
+     "url": "https://nightridernotary.com",
+     "telephone": "+1-XXX-XXX-XXXX",
+     "address": {
+       "@type": "PostalAddress",
+       "streetAddress": "Auburn",
+       "addressLocality": "Auburn",
+       "addressRegion": "WA",
+       "postalCode": "98001",
+       "addressCountry": "US"
+     },
+     "geo": {
+       "@type": "GeoCoordinates",
+       "latitude": 47.3073,
+       "longitude": -122.2285
+     },
+     "openingHoursSpecification": [
+       {
+         "@type": "OpeningHoursSpecification",
+         "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+         "opens": "17:00",
+         "closes": "22:00"
+       }
+     ]
+   }
+   ```
+
+## Performance
+
+The site is optimized for performance:
+- Server-side rendering with Next.js
+- Automatic code splitting
+- Optimized images (when added)
+- Minimal JavaScript bundle
+- CSS purging with Tailwind
+
+## Security
+
+Security headers configured in `vercel.json`:
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection: 1; mode=block
 
 ## Future Enhancements
 
-- Support for Spotify and other music services
-- More sophisticated location extraction (NLP/entity recognition)
-- User preferences for genre selection
-- Playlist customization options (track count, genre weights)
-- Web interface for easier use
-- Scheduled daily playlist creation
-- Integration with calendar apps
+Consider adding:
+- [ ] Online booking/scheduling system (Calendly integration)
+- [ ] Payment processing (Stripe)
+- [ ] Client portal
+- [ ] Blog for SEO content
+- [ ] Testimonials section
+- [ ] Photo gallery
+- [ ] Live chat widget
+- [ ] Analytics (Google Analytics 4, Vercel Analytics)
+
+## Support
+
+For questions about the website:
+- Check Next.js docs: [nextjs.org/docs](https://nextjs.org/docs)
+- Check Vercel docs: [vercel.com/docs](https://vercel.com/docs)
+- Check Tailwind docs: [tailwindcss.com/docs](https://tailwindcss.com/docs)
 
 ## License
 
-MIT
+Copyright © 2026 Nightrider Notary. All rights reserved.
 
-## Contributing
+---
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
+Built with ❤️ using Next.js and deployed on Vercel
