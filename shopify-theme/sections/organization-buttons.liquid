@@ -4,10 +4,34 @@
 
     <div class="organization-grid">
       {% for block in section.blocks %}
-        <div class="organization-item" {{ block.shopify_attributes }}>
+        {% assign collection_handle = block.settings.collection_url | split: '/collections/' | last | split: '/' | first %}
+        {% assign collection = collections[collection_handle] %}
+
+        <div class="organization-item" {{ block.shopify_attributes }} data-organization-index="{{ forloop.index }}">
           <a href="{{ block.settings.collection_url }}" class="organization-link">
             <div class="organization-image-wrapper">
-              {%- if block.settings.organization_image -%}
+              {%- if section.settings.enable_slideshow and collection and collection.products.size > 0 -%}
+                <div class="organization-slideshow" data-slideshow-id="organization-{{ forloop.index }}">
+                  {% for product in collection.products limit: section.settings.slideshow_limit %}
+                    {%- if product.featured_image -%}
+                      <div class="slideshow-image {% if forloop.first %}active{% endif %}">
+                        <img
+                          src="{{ product.featured_image | img_url: '600x600' }}"
+                          alt="{{ product.title }}"
+                          class="organization-image"
+                          loading="lazy"
+                        >
+                      </div>
+                    {%- endif -%}
+                  {% endfor %}
+
+                  {% if collection.products.size == 0 %}
+                    <div class="organization-image-placeholder">
+                      {{ block.settings.organization_title }}
+                    </div>
+                  {% endif %}
+                </div>
+              {%- elsif block.settings.organization_image -%}
                 <img
                   src="{{ block.settings.organization_image | img_url: '600x600' }}"
                   alt="{{ block.settings.organization_title }}"
@@ -28,6 +52,33 @@
   </div>
 </section>
 
+<script>
+  if (typeof initOrganizationSlideshows === 'undefined') {
+    function initOrganizationSlideshows() {
+      const slideshows = document.querySelectorAll('.organization-slideshow');
+
+      slideshows.forEach(slideshow => {
+        const slides = slideshow.querySelectorAll('.slideshow-image');
+        if (slides.length <= 1) return;
+
+        let currentIndex = 0;
+
+        setInterval(() => {
+          slides[currentIndex].classList.remove('active');
+          currentIndex = (currentIndex + 1) % slides.length;
+          slides[currentIndex].classList.add('active');
+        }, {{ section.settings.slideshow_speed | times: 1000 }});
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initOrganizationSlideshows);
+    } else {
+      initOrganizationSlideshows();
+    }
+  }
+</script>
+
 {% schema %}
 {
   "name": "Organization Buttons",
@@ -37,6 +88,32 @@
       "id": "heading",
       "label": "Section Heading",
       "default": "Shop by Collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slideshow",
+      "label": "Enable product slideshow",
+      "default": true,
+      "info": "Show product images from each collection as a slideshow"
+    },
+    {
+      "type": "range",
+      "id": "slideshow_limit",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "label": "Number of products to show",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "slideshow_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Slideshow speed",
+      "default": 3
     }
   ],
   "blocks": [

@@ -76,7 +76,10 @@
         },
         "block_order": ["organization-1", "organization-2"],
         "settings": {
-          "heading": "Shop by Collection"
+          "heading": "Shop by Collection",
+          "enable_slideshow": true,
+          "slideshow_limit": 5,
+          "slideshow_speed": 3
         }
       }
     },
