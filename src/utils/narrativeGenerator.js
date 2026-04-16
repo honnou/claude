@@ -43,6 +43,13 @@ function incomeDescription(formData) {
   return null
 }
 
+// Push a bulleted list as a single paragraph block with `- ` prefix lines,
+// preceded by an intro sentence in its own paragraph.
+function pushList(parts, intro, items) {
+  if (intro) parts.push(intro)
+  parts.push(items.map(i => `- ${i}`).join('\n'))
+}
+
 export function generateNarrative(formData) {
   const a1 = formData.adults[0] || {}
   const a2 = formData.adults[1] || {}
@@ -60,18 +67,14 @@ export function generateNarrative(formData) {
   const childAge = child ? getAge(child.dob) : null
 
   const poly = formData.polyamory || {}
+  const story = formData.story || {}
   const years = poly.yearsTogethers || null
   const structure = poly.relationshipStructure || 'triad'
   const cohabiting = poly.cohabitation === 'yes' || poly.cohabitation === true
-  const story = poly.relationshipStory || ''
-  const whyPoly = poly.whyPolyamory || ''
-  const dayToDay = poly.dayToDayLife || ''
-  const whyPlanning = poly.whyEstatePlanning || ''
   const breakupPlan = poly.breakupContingencyPlan || ''
 
   const totals = calculateTotals(formData)
   const hasAssets = totals.totalAssets > 0
-  const hasDebts = totals.totalLiabilities > 0
   const combinedIncome = incomeDescription(formData)
 
   const realProps = (formData.assets?.realProperty || []).filter(p => p.address || p.value)
@@ -86,15 +89,12 @@ export function generateNarrative(formData) {
   const primaryBeneficiaries = (dist.primaryBeneficiaries || []).filter(b => b.name)
   const specificBequests = (dist.specificBequests || []).filter(b => b.item && b.recipient)
 
-  const dm = formData.decisionMaking || {}
   const currentPlan = formData.currentEstatePlan || {}
   const specialNotes = formData.specialConsiderations || {}
   const attorneyNotes = formData.attorneyNotes || {}
-
   const documentsWanted = (attorneyNotes.documentsWanted || [])
   const hasExistingDocuments = currentPlan.hasWill === 'yes' || currentPlan.hasTrust === 'yes'
 
-  // Build sections
   const parts = []
 
   // ── OPENING ────────────────────────────────────────────────
@@ -121,7 +121,6 @@ export function generateNarrative(formData) {
   } else {
     opening += `Our household is built on mutual commitment, shared values, and an intentional approach to the life we are creating together. `
   }
-
   parts.push(opening)
 
   let opening2 = `${n1}, ${n2}, and ${n3} each bring their own history, strengths, and vision to this family. `
@@ -129,45 +128,48 @@ export function generateNarrative(formData) {
     opening2 += `We share a home and, with it, the day-to-day rhythms that define a life built together. `
   }
   opening2 += `We are not a family that fits neatly into the categories our legal system was designed for—and that fact is precisely what has brought us here: to be intentional about protecting one another, and the people we love, in ways the law will not do for us automatically.`
-
   parts.push(opening2)
 
   // ── JOURNEY ────────────────────────────────────────────────
   parts.push(`## Our Story`)
 
-  if (story) {
-    parts.push(story)
-  } else {
-    let journeyPara = `Our relationship did not happen by accident. Each of us made a conscious choice—not just to love, but to commit: to build something lasting and to stand accountable for one another's wellbeing. `
-    if (structure && structure !== 'triad') {
-      journeyPara += `Our relationship structure, which we describe as a ${structure}, reflects the specific ways we have defined our commitments and responsibilities. `
-    } else {
-      journeyPara += `As a triad, we have defined our commitments and responsibilities together, in ways that reflect who we actually are rather than defaulting to inherited models. `
-    }
-    parts.push(journeyPara)
+  if (story.howWeMet) {
+    parts.push(story.howWeMet)
   }
 
-  if (whyPoly) {
-    parts.push(whyPoly)
+  if (story.howFamilyFormed) {
+    parts.push(story.howFamilyFormed)
+  } else if (!story.howWeMet) {
+    parts.push(
+      `Our relationship did not happen by accident. Each of us made a conscious choice—not just to love, but to commit: to build something lasting and to stand accountable for one another's wellbeing. ${structure !== 'triad' ? `Our relationship structure, which we describe as a ${structure}, reflects the specific ways we have defined our commitments and responsibilities.` : `As a triad, we have defined our commitments and responsibilities together, in ways that reflect who we actually are rather than defaulting to inherited models.`}`
+    )
+  }
+
+  if (story.whyPolyamory) {
+    parts.push(story.whyPolyamory)
   } else {
     parts.push(
       `Polyamory, for us, is not a rejection of commitment—it is a different shape of it. We have chosen a family structure that requires more explicit conversation, more deliberate planning, and more honest communication than many people ever have with the people they love. That intentionality is one of our family's greatest assets.`
     )
   }
 
-  if (dayToDay) {
-    parts.push(dayToDay)
+  if (story.whatFamilyMeans) {
+    parts.push(story.whatFamilyMeans)
+  }
+
+  if (story.dayToDayLife) {
+    parts.push(story.dayToDayLife)
   } else if (cohabiting && childName) {
     parts.push(
-      `Day to day, our life looks much like any family's: meals together, school runs${childName ? ` for ${childName}` : ''}, work, errands, and the ordinary texture of a shared household. What sets us apart is not the content of our days but the framework we have built to hold them—a framework we are now formalizing through estate planning.`
+      `Day to day, our life looks much like any family's: meals together, school runs for ${childName}, work, errands, and the ordinary texture of a shared household. What sets us apart is not the content of our days but the framework we have built to hold them—a framework we are now formalizing through estate planning.`
     )
   }
 
   // ── WHY ESTATE PLANNING ────────────────────────────────────
   parts.push(`## Why Estate Planning Matters for Our Family`)
 
-  if (whyPlanning) {
-    parts.push(whyPlanning)
+  if (story.whyEstatePlanning) {
+    parts.push(story.whyEstatePlanning)
   }
 
   parts.push(
@@ -214,7 +216,7 @@ export function generateNarrative(formData) {
     if (assetParts.length > 0) {
       situation += assetParts.join(', ') + `. `
     }
-    if (hasDebts) {
+    if (totals.totalLiabilities > 0) {
       situation += `Against these assets, we carry liabilities of ${formatCurrency(totals.totalLiabilities)}, leaving a net estate of approximately ${formatCurrency(totals.netEstate)}. `
     } else {
       situation += `Our total asset base is approximately ${formatCurrency(totals.totalAssets)}. `
@@ -228,11 +230,9 @@ export function generateNarrative(formData) {
     if (currentPlan.hasWill === 'yes') existingDocs += `All or some of us have existing wills. `
     if (currentPlan.hasTrust === 'yes') existingDocs += `We have a trust established. `
     if (currentPlan.lastReviewedDate) existingDocs += `These documents were last reviewed in ${currentPlan.lastReviewedDate}. `
-    if (currentPlan.currentIssues) {
-      existingDocs += `However, we have identified the following concerns: ${currentPlan.currentIssues} `
-    } else {
-      existingDocs += `These documents predate our current family structure and do not reflect our intentions as a triad. Our goal is to review, update, and supplement them to fully protect our family. `
-    }
+    existingDocs += currentPlan.currentIssues
+      ? `However, we have identified the following concerns: ${currentPlan.currentIssues}`
+      : `These documents predate our current family structure and do not reflect our intentions as a triad. Our goal is to review, update, and supplement them to fully protect our family.`
     parts.push(existingDocs)
   } else {
     parts.push(
@@ -240,7 +240,6 @@ export function generateNarrative(formData) {
     )
   }
 
-  // Specific vulnerability
   let vulnerability = `The most pressing vulnerability in our current situation is clear: `
   if (childName) {
     vulnerability += `if any one of us were to die or become incapacitated today, ${childName}'s care and financial security would be in legal limbo. `
@@ -256,36 +255,30 @@ export function generateNarrative(formData) {
   // ── OUR PLAN ───────────────────────────────────────────────
   parts.push(`## Our Plan`)
 
-  let planIntro = `We are working with an estate planning attorney to put the following legal framework in place: `
-  const docsList = []
+  const docsList = documentsWanted.length > 0 ? documentsWanted : [
+    `Wills for ${n1}, ${n2}, and ${n3}`,
+    `Healthcare Powers of Attorney for each adult`,
+    `Durable Financial Powers of Attorney for each adult`,
+    `HIPAA Authorizations naming all three partners`,
+    `Advance Healthcare Directives for each adult`,
+    ...(childName ? [`Formal Guardianship Designations for ${childName}`] : []),
+    ...(businesses.length > 0 ? [`Business Succession Planning`] : []),
+    ...(hasPrimaryHome ? [`Real Property Title Review`] : []),
+    `Beneficiary Designation Updates on all accounts, retirement funds, and insurance policies`,
+  ]
 
-  if (documentsWanted.length > 0) {
-    docsList.push(...documentsWanted)
-  } else {
-    docsList.push(
-      `Wills for ${n1}, ${n2}, and ${n3}`,
-      `Healthcare Powers of Attorney for each adult`,
-      `Durable Financial Powers of Attorney for each adult`,
-      `HIPAA Authorizations naming all three partners`,
-      `Advance Healthcare Directives for each adult`,
-    )
-    if (childName) docsList.push(`Formal Guardianship Designations for ${childName}`)
-    if (businesses.length > 0) docsList.push(`Business Succession Planning`)
-    if (hasPrimaryHome) docsList.push(`Real Property Title Review`)
-    docsList.push(`Beneficiary Designation Updates on all accounts, retirement funds, and insurance policies`)
-  }
-
-  planIntro += docsList.map(d => `\n  • ${d}`).join('')
-  parts.push(planIntro)
+  pushList(
+    parts,
+    `We are working with an estate planning attorney to put the following legal framework in place:`,
+    docsList
+  )
 
   if (primaryBeneficiaries.length > 0) {
     let distPara = `Our distribution intentions are clear. `
     const benefList = primaryBeneficiaries
       .filter(b => b.name && b.percentage)
       .map(b => `${b.name} (${b.percentage}%)`)
-    if (benefList.length > 0) {
-      distPara += `We intend to leave our estates to ${benefList.join(', ')}. `
-    }
+    if (benefList.length > 0) distPara += `We intend to leave our estates to ${benefList.join(', ')}. `
     if (specificBequests.length > 0) {
       distPara += `We have also identified specific bequests: `
       distPara += specificBequests.map(b => `${b.item} to ${b.recipient}`).join('; ')
@@ -309,6 +302,10 @@ export function generateNarrative(formData) {
     parts.push(`We have also thought carefully about what happens to our shared assets and co-parenting arrangements in the event our relationship structure changes. ${breakupPlan}`)
   }
 
+  if (story.whatWantProtected) {
+    parts.push(story.whatWantProtected)
+  }
+
   // ── CLOSING ────────────────────────────────────────────────
   parts.push(`## Looking Forward`)
 
@@ -323,7 +320,9 @@ export function generateNarrative(formData) {
     `There is something worth naming in what we are doing here. Polyamorous families who take estate planning seriously are modeling something important: that intentional family structures require intentional legal infrastructure. We are not waiting for the law to catch up to our family. We are using the tools that exist right now to build the protections our family deserves. That is not just responsible—it is an act of love.`
   )
 
-  if (specialNotes.other || specialNotes.healthIssues || attorneyNotes.concerns) {
+  if (story.additionalContext) {
+    parts.push(story.additionalContext)
+  } else if (specialNotes.other || specialNotes.healthIssues || attorneyNotes.concerns) {
     const noteText = specialNotes.other || specialNotes.healthIssues || attorneyNotes.concerns
     parts.push(`We approach this process with open eyes. ${noteText}`)
   }

@@ -7,6 +7,7 @@ import ProgressBar from './components/layout/ProgressBar.jsx'
 import NarrativeDisplay from './components/narrative/NarrativeDisplay.jsx'
 
 import Section01HouseholdMembers from './components/sections/Section01HouseholdMembers.jsx'
+import SectionStory from './components/sections/SectionStory.jsx'
 import Section02ChildInformation from './components/sections/Section02ChildInformation.jsx'
 import Section03Guardianship from './components/sections/Section03Guardianship.jsx'
 import Section04AssetInventory from './components/sections/Section04AssetInventory.jsx'
@@ -20,7 +21,7 @@ import Section11ProfessionalAdvisors from './components/sections/Section11Profes
 import Section12SpecialConsiderations from './components/sections/Section12SpecialConsiderations.jsx'
 import Section13AttorneyNotes from './components/sections/Section13AttorneyNotes.jsx'
 
-const TOTAL_SECTIONS = 13
+const TOTAL_SECTIONS = 14
 
 function deepMerge(base, override) {
   if (!override) return base
@@ -104,19 +105,20 @@ export default function App() {
 
   const sections = [
     <Section01HouseholdMembers key={0} {...commonProps} />,
-    <Section02ChildInformation key={1} {...commonProps} />,
-    <Section03Guardianship key={2} {...commonProps} />,
-    <Section04AssetInventory key={3} {...commonProps} />,
-    <Section05DebtsLiabilities key={4} {...commonProps} />,
-    <Section06CurrentEstatePlan key={5} {...commonProps} />,
-    <Section07DistributionIntentions key={6} {...commonProps} />,
-    <Section08DecisionMakingAuthority key={7} {...commonProps} />,
-    <Section09PolyamoryPlanning key={8} {...commonProps} />,
-    <Section10TaxesFinancial key={9} {...commonProps} />,
-    <Section11ProfessionalAdvisors key={10} {...commonProps} />,
-    <Section12SpecialConsiderations key={11} {...commonProps} />,
+    <SectionStory key={1} {...commonProps} />,
+    <Section02ChildInformation key={2} {...commonProps} />,
+    <Section03Guardianship key={3} {...commonProps} />,
+    <Section04AssetInventory key={4} {...commonProps} />,
+    <Section05DebtsLiabilities key={5} {...commonProps} />,
+    <Section06CurrentEstatePlan key={6} {...commonProps} />,
+    <Section07DistributionIntentions key={7} {...commonProps} />,
+    <Section08DecisionMakingAuthority key={8} {...commonProps} />,
+    <Section09PolyamoryPlanning key={9} {...commonProps} />,
+    <Section10TaxesFinancial key={10} {...commonProps} />,
+    <Section11ProfessionalAdvisors key={11} {...commonProps} />,
+    <Section12SpecialConsiderations key={12} {...commonProps} />,
     <Section13AttorneyNotes
-      key={12}
+      key={13}
       {...commonProps}
       onGoToNarrative={() => { setShowNarrative(true); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
     />,

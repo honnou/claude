@@ -99,7 +99,19 @@ export const INITIAL_FORM_DATA = {
   // Section 1: Household Members
   adults: [emptyAdult(), emptyAdult(), emptyAdult()],
 
-  // Section 2: Children
+  // Section 2: Our Story
+  story: {
+    howWeMet: '',
+    howFamilyFormed: '',
+    whyPolyamory: '',
+    whatFamilyMeans: '',
+    dayToDayLife: '',
+    whyEstatePlanning: '',
+    whatWantProtected: '',
+    additionalContext: '',
+  },
+
+  // Section 3: Children
   children: [emptyChild()],
 
   // Section 3: Guardianship
@@ -189,7 +201,7 @@ export const INITIAL_FORM_DATA = {
     burialPreferences: '',
   },
 
-  // Section 9: Polyamory-Specific Planning
+  // Section 10: Polyamory-Specific Planning
   polyamory: {
     relationshipStructure: '',
     relationshipStructureOther: '',
@@ -198,10 +210,6 @@ export const INITIAL_FORM_DATA = {
     coParentingArrangement: '',
     householdAssetOwnership: '',
     breakupContingencyPlan: '',
-    relationshipStory: '',
-    whyEstatePlanning: '',
-    dayToDayLife: '',
-    whyPolyamory: '',
   },
 
   // Section 10: Taxes & Financial
@@ -260,6 +268,7 @@ export const INITIAL_FORM_DATA = {
 
 export const SECTION_TITLES = [
   'Household Members',
+  'Our Story',
   'Child Information',
   'Desired Guardianship',
   'Asset Inventory',

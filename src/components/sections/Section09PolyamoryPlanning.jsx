@@ -19,9 +19,9 @@ export default function Section09PolyamoryPlanning({ formData, updateSection, cu
 
   return (
     <SectionWrapper
-      number={9}
+      number={10}
       title="Polyamory-Specific Planning"
-      description="This section captures the unique aspects of your relationship structure that directly affect your estate plan."
+      description="These structural details directly shape which documents you need and how they should be drafted."
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 mb-4">
         <FormField label="Relationship Structure">
@@ -74,35 +74,15 @@ export default function Section09PolyamoryPlanning({ formData, updateSection, cu
 
       <div className="bg-violet-50 border border-violet-200 rounded-lg p-4 mb-6">
         <p className="text-sm text-violet-800 font-medium mb-1">Why this matters</p>
-        <p className="text-xs text-violet-700">Your relationship structure, cohabitation status, and how you hold assets together directly shape which legal documents you need and how they should be drafted. The more detail you provide here, the more tailored your estate plan will be.</p>
+        <p className="text-xs text-violet-700">Your relationship structure, cohabitation status, and asset ownership directly shape which legal documents you need and how they should be drafted.</p>
       </div>
-
-      <FormField label="Your Relationship Story" hint="How did you meet? How did your family take its current form? This will be used in your narrative.">
-        <TextareaInput value={poly.relationshipStory} onChange={set('relationshipStory')} rows={5}
-          placeholder="Tell us how you met and how your family came together. This is your story—tell it in your own words." />
-      </FormField>
-
-      <FormField label="Why This Structure?" hint="What drew you to polyamory? Why does this structure work for your family?">
-        <TextareaInput value={poly.whyPolyamory} onChange={set('whyPolyamory')} rows={4}
-          placeholder="Why did you choose this relationship structure? What makes it right for your family?" />
-      </FormField>
-
-      <FormField label="Day-to-Day Life" hint="What does your household life look like? This context helps the narrative feel grounded.">
-        <TextareaInput value={poly.dayToDayLife} onChange={set('dayToDayLife')} rows={4}
-          placeholder="Describe a typical day or week in your household..." />
-      </FormField>
-
-      <FormField label="Why Are You Seeking Estate Planning Now?" hint="What prompted this? Any specific event or concern?">
-        <TextareaInput value={poly.whyEstatePlanning} onChange={set('whyEstatePlanning')} rows={3}
-          placeholder="What brought you here? Was there a specific event, concern, or milestone that motivated this?" />
-      </FormField>
 
       <FormField
         label="Separation / Breakup Contingencies"
         hint="What should happen to shared assets and co-parenting if the relationship structure changes?"
       >
-        <TextareaInput value={poly.breakupContingencyPlan} onChange={set('breakupContingencyPlan')} rows={4}
-          placeholder="Describe your intentions: who keeps the house, how shared finances are divided, what co-parenting looks like if partners separate..." />
+        <TextareaInput value={poly.breakupContingencyPlan} onChange={set('breakupContingencyPlan')} rows={5}
+          placeholder="Describe your intentions: who keeps the house, how shared finances are divided, what co-parenting looks like if partners separate, whether a formal cohabitation agreement should address this..." />
       </FormField>
 
       <Navigation currentSection={currentSection} onPrev={onPrev} onNext={onNext} isLastSection={false} />

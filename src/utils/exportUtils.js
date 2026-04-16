@@ -8,6 +8,7 @@ export function exportAsJSON(formData) {
       adults: formData.adults,
       children: formData.children,
     },
+    story: formData.story,
     guardianship: formData.guardianship,
     assets: {
       ...formData.assets,
@@ -156,18 +157,34 @@ export function exportNarrativeAsPDF(narrative, formData) {
     for (const para of paragraphs) {
       if (!para.trim()) continue
 
-      // Section headings (lines starting with ##)
+      // Section headings
       if (para.startsWith('## ')) {
         y += 10
         doc.setFont('helvetica', 'bold')
         doc.setFontSize(14)
         doc.setTextColor(109, 40, 217)
-        const heading = para.replace('## ', '')
-        doc.text(heading, margin, y)
+        doc.text(para.replace(/^## /, ''), margin, y)
         y += lineHeight + 6
         doc.setFont('times', 'normal')
         doc.setFontSize(12)
         doc.setTextColor(30, 30, 30)
+        continue
+      }
+
+      // Bulleted list block: every line starts with `- `
+      const paraLines = para.split('\n').filter(l => l.trim())
+      if (paraLines.length > 1 && paraLines.every(l => l.trim().startsWith('- '))) {
+        for (const item of paraLines) {
+          const text = item.replace(/^- /, '').trim()
+          const wrapped = doc.splitTextToSize(text, contentWidth - 16)
+          for (let li = 0; li < wrapped.length; li++) {
+            if (y + lineHeight > pageHeight - margin) { doc.addPage(); y = margin }
+            if (li === 0) doc.text('•', margin, y)
+            doc.text(wrapped[li], margin + 16, y)
+            y += lineHeight
+          }
+        }
+        y += 8
         continue
       }
 
