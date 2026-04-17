@@ -2,7 +2,6 @@ export const emptyAdult = () => ({
   firstName: '',
   lastName: '',
   dob: '',
-  ssn: '',
   address: '',
   city: '',
   state: '',

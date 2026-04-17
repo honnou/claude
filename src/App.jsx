@@ -4,6 +4,7 @@ import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage, getLastSav
 
 import Header from './components/layout/Header.jsx'
 import ProgressBar from './components/layout/ProgressBar.jsx'
+import PartnerTabs from './components/layout/PartnerTabs.jsx'
 import NarrativeDisplay from './components/narrative/NarrativeDisplay.jsx'
 
 import Section01HouseholdMembers from './components/sections/Section01HouseholdMembers.jsx'
@@ -22,6 +23,9 @@ import Section12SpecialConsiderations from './components/sections/Section12Speci
 import Section13AttorneyNotes from './components/sections/Section13AttorneyNotes.jsx'
 
 const TOTAL_SECTIONS = 14
+
+// Sections where the active partner controls what's shown
+const PER_PARTNER_SECTIONS = new Set([0, 8, 10])
 
 function deepMerge(base, override) {
   if (!override) return base
@@ -50,6 +54,7 @@ export default function App() {
     return { ...INITIAL_FORM_DATA, _meta: { ...INITIAL_FORM_DATA._meta, createdAt: new Date().toISOString() } }
   })
   const [currentSection, setCurrentSection] = useState(0)
+  const [activePartner, setActivePartner] = useState(0)
   const [showNarrative, setShowNarrative] = useState(false)
   const [lastSaved, setLastSaved] = useState(() => getLastSaved())
 
@@ -71,6 +76,7 @@ export default function App() {
       clearLocalStorage()
       setFormData({ ...INITIAL_FORM_DATA, _meta: { ...INITIAL_FORM_DATA._meta, createdAt: new Date().toISOString() } })
       setCurrentSection(0)
+      setActivePartner(0)
       setShowNarrative(false)
       setLastSaved(null)
     }
@@ -101,6 +107,7 @@ export default function App() {
     currentSection,
     onPrev: goPrev,
     onNext: goNext,
+    activePartner,
   }
 
   const sections = [
@@ -137,8 +144,25 @@ export default function App() {
     <div className="min-h-screen bg-slate-50">
       <Header lastSaved={lastSaved} onReset={handleReset} />
       <ProgressBar currentSection={currentSection} onNavigate={goToSection} />
+      <PartnerTabs
+        adults={formData.adults}
+        activePartner={activePartner}
+        onChange={(i) => {
+          setActivePartner(i)
+          // If currently on a shared section, stay put; if on a per-partner section, just switch partner
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
+        {/* Shared-section callout */}
+        {!PER_PARTNER_SECTIONS.has(currentSection) && (
+          <div className="mb-4 text-xs text-gray-400 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-gray-300 inline-block" />
+            Shared section — one response for the whole household
+          </div>
+        )}
+
         {sections[currentSection]}
       </main>
 

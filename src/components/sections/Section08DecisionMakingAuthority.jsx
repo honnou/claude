@@ -2,108 +2,129 @@ import SectionWrapper from '../ui/SectionWrapper.jsx'
 import FormField, { TextInput, TextareaInput, SelectInput } from '../ui/FormField.jsx'
 import Navigation from '../layout/Navigation.jsx'
 
-function adultLabel(formData, i) {
-  const a = formData.adults?.[i]
-  return a?.firstName || `Adult ${i + 1}`
-}
-
-export default function Section08DecisionMakingAuthority({ formData, updateSection, currentSection, onPrev, onNext }) {
+export default function Section08DecisionMakingAuthority({
+  formData, updateSection, currentSection, onPrev, onNext, activePartner,
+}) {
   const dm = formData.decisionMaking || {}
   const set = (field) => (val) => updateSection('decisionMaking', { ...dm, [field]: val })
 
-  const adults = [0, 1, 2]
+  const adults = formData.adults || []
+  const me = adults[activePartner] || {}
+  const myName = me.firstName || `Partner ${activePartner + 1}`
+  const p = activePartner + 1  // 1-based field prefix
 
   return (
     <SectionWrapper
-      number={8}
-      title="Decision-Making Authority"
-      description="Specify who has legal authority to make healthcare and financial decisions for each adult."
+      number={9}
+      title={`${myName}'s Decision-Making Authority`}
+      description="Specify who has legal authority to make healthcare and financial decisions for you. Use the partner tabs above so each person fills in their own preferences."
     >
       {/* Healthcare POA */}
       <div className="mb-6">
         <h3 className="subsection-title">Healthcare Power of Attorney</h3>
-        <p className="text-xs text-gray-500 mb-4">Who can make medical decisions if each person is unable to speak for themselves?</p>
-        {adults.map(i => (
-          <div key={i} className="array-item-card mb-3">
-            <p className="text-sm font-semibold text-gray-700 mb-3">For {adultLabel(formData, i)}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-              <FormField label="Primary Healthcare Agent">
-                <TextInput value={dm[`adult${i + 1}HealthcareProxy`]} onChange={set(`adult${i + 1}HealthcareProxy`)} placeholder="Full name" />
-              </FormField>
-              <FormField label="Alternate Healthcare Agent">
-                <TextInput value={dm[`adult${i + 1}HealthcareProxyAlternate`]} onChange={set(`adult${i + 1}HealthcareProxyAlternate`)} placeholder="Full name" />
-              </FormField>
-            </div>
-          </div>
-        ))}
+        <p className="text-xs text-gray-500 mb-4">Who can make medical decisions if you are unable to speak for yourself?</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+          <FormField label="Primary Healthcare Agent">
+            <TextInput
+              value={dm[`adult${p}HealthcareProxy`]}
+              onChange={set(`adult${p}HealthcareProxy`)}
+              placeholder="Full name"
+            />
+          </FormField>
+          <FormField label="Alternate Healthcare Agent">
+            <TextInput
+              value={dm[`adult${p}HealthcareProxyAlternate`]}
+              onChange={set(`adult${p}HealthcareProxyAlternate`)}
+              placeholder="Full name"
+            />
+          </FormField>
+        </div>
       </div>
 
       {/* Financial POA */}
       <div className="mb-6">
         <h3 className="subsection-title">Durable Financial Power of Attorney</h3>
-        <p className="text-xs text-gray-500 mb-4">Who can manage financial affairs if each person is incapacitated?</p>
-        {adults.map(i => (
-          <div key={i} className="array-item-card mb-3">
-            <p className="text-sm font-semibold text-gray-700 mb-3">For {adultLabel(formData, i)}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-              <FormField label="Primary Financial Agent">
-                <TextInput value={dm[`adult${i + 1}FinancialPOA`]} onChange={set(`adult${i + 1}FinancialPOA`)} placeholder="Full name" />
-              </FormField>
-              <FormField label="Alternate Financial Agent">
-                <TextInput value={dm[`adult${i + 1}FinancialPOAAlternate`]} onChange={set(`adult${i + 1}FinancialPOAAlternate`)} placeholder="Full name" />
-              </FormField>
-            </div>
-          </div>
-        ))}
+        <p className="text-xs text-gray-500 mb-4">Who can manage your financial affairs if you are incapacitated?</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+          <FormField label="Primary Financial Agent">
+            <TextInput
+              value={dm[`adult${p}FinancialPOA`]}
+              onChange={set(`adult${p}FinancialPOA`)}
+              placeholder="Full name"
+            />
+          </FormField>
+          <FormField label="Alternate Financial Agent">
+            <TextInput
+              value={dm[`adult${p}FinancialPOAAlternate`]}
+              onChange={set(`adult${p}FinancialPOAAlternate`)}
+              placeholder="Full name"
+            />
+          </FormField>
+        </div>
       </div>
 
-      {/* HIPAA Authorization */}
+      {/* HIPAA */}
       <div className="mb-6">
         <h3 className="subsection-title">HIPAA Authorization</h3>
-        <p className="text-xs text-gray-500 mb-4">Who is authorized to receive medical information for each person?</p>
-        {adults.map(i => (
-          <FormField key={i} label={`For ${adultLabel(formData, i)}: Authorized Person(s)`}>
-            <TextInput value={dm[`adult${i + 1}HIPAAAuth`]} onChange={set(`adult${i + 1}HIPAAAuth`)} placeholder="Full name(s), comma-separated" />
-          </FormField>
-        ))}
-      </div>
-
-      {/* End of Life */}
-      <div className="mb-6">
-        <h3 className="subsection-title">End-of-Life Preferences</h3>
-        {adults.map(i => (
-          <FormField key={i} label={`${adultLabel(formData, i)}'s Preferences`}>
-            <TextareaInput value={dm[`adult${i + 1}EndOfLife`]} onChange={set(`adult${i + 1}EndOfLife`)} rows={2}
-              placeholder="Describe any known wishes regarding life support, comfort care, etc." />
-          </FormField>
-        ))}
-
-        <FormField label="Life Support / Artificial Prolongation">
-          <SelectInput value={dm.lifeSupport} onChange={set('lifeSupport')}
-            options={[
-              { value: 'all-measures', label: 'Use all available measures' },
-              { value: 'comfort-only', label: 'Comfort care only, no extraordinary measures' },
-              { value: 'limited', label: 'Limited measures (specify in notes)' },
-              { value: 'discuss', label: 'Discuss with healthcare agent at the time' },
-            ]}
-            placeholder="Select preference..."
+        <p className="text-xs text-gray-500 mb-4">Who is authorized to receive your medical information?</p>
+        <FormField label="Authorized Person(s)">
+          <TextInput
+            value={dm[`adult${p}HIPAAAuth`]}
+            onChange={set(`adult${p}HIPAAAuth`)}
+            placeholder="Full name(s), comma-separated"
           />
         </FormField>
+      </div>
 
+      {/* Per-person end-of-life */}
+      <div className="mb-6">
+        <h3 className="subsection-title">Your End-of-Life Preferences</h3>
+        <FormField label="Personal Wishes">
+          <TextareaInput
+            value={dm[`adult${p}EndOfLife`]}
+            onChange={set(`adult${p}EndOfLife`)}
+            rows={3}
+            placeholder="Describe any specific wishes regarding life support, comfort care, or end-of-life treatment…"
+          />
+        </FormField>
+      </div>
+
+      {/* Shared preferences — shown once, not per-partner */}
+      <div className="mb-6 bg-gray-50 rounded-lg border border-gray-200 p-4">
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">
+          Household-wide preferences (shared)
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+          <FormField label="Life Support / Artificial Prolongation">
+            <SelectInput
+              value={dm.lifeSupport}
+              onChange={set('lifeSupport')}
+              options={[
+                { value: 'all-measures', label: 'Use all available measures' },
+                { value: 'comfort-only', label: 'Comfort care only, no extraordinary measures' },
+                { value: 'limited', label: 'Limited measures (specify in notes)' },
+                { value: 'discuss', label: 'Discuss with healthcare agent at the time' },
+              ]}
+              placeholder="Select preference…"
+            />
+          </FormField>
           <FormField label="Organ Donation">
-            <SelectInput value={dm.organDonation} onChange={set('organDonation')}
+            <SelectInput
+              value={dm.organDonation}
+              onChange={set('organDonation')}
               options={[
                 { value: 'yes-all', label: 'Yes — all organs' },
                 { value: 'yes-specific', label: 'Yes — specific organs only' },
                 { value: 'no', label: 'No' },
                 { value: 'discuss', label: 'Discuss with family' },
               ]}
-              placeholder="Select..."
+              placeholder="Select…"
             />
           </FormField>
-          <FormField label="Burial / Cremation Preferences">
-            <SelectInput value={dm.burialPreferences} onChange={set('burialPreferences')}
+          <FormField label="Burial / Cremation Preferences" className="sm:col-span-2">
+            <SelectInput
+              value={dm.burialPreferences}
+              onChange={set('burialPreferences')}
               options={[
                 { value: 'burial', label: 'Traditional burial' },
                 { value: 'cremation', label: 'Cremation' },
@@ -111,7 +132,7 @@ export default function Section08DecisionMakingAuthority({ formData, updateSecti
                 { value: 'no-preference', label: 'No preference' },
                 { value: 'discuss', label: 'Discuss with family' },
               ]}
-              placeholder="Select..."
+              placeholder="Select…"
             />
           </FormField>
         </div>
