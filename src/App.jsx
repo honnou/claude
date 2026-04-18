@@ -1,10 +1,22 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { INITIAL_FORM_DATA } from './data/initialFormData.js'
-import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage, getLastSaved } from './utils/storageUtils.js'
+import { isConfigured } from './lib/supabase.js'
+import {
+  createHousehold,
+  loadHousehold,
+  saveHousehold,
+  subscribeToHousehold,
+  getStoredPartner,
+  storePartner,
+  getLastHouseholdId,
+  mergeRemoteUpdate,
+} from './lib/sync.js'
 
 import Header from './components/layout/Header.jsx'
 import ProgressBar from './components/layout/ProgressBar.jsx'
 import PartnerTabs from './components/layout/PartnerTabs.jsx'
+import LandingPage from './components/landing/LandingPage.jsx'
+import PartnerSelect from './components/landing/PartnerSelect.jsx'
 import NarrativeDisplay from './components/narrative/NarrativeDisplay.jsx'
 
 import Section01HouseholdMembers from './components/sections/Section01HouseholdMembers.jsx'
@@ -23,65 +35,204 @@ import Section12SpecialConsiderations from './components/sections/Section12Speci
 import Section13AttorneyNotes from './components/sections/Section13AttorneyNotes.jsx'
 
 const TOTAL_SECTIONS = 14
-
-// Sections where the active partner controls what's shown
 const PER_PARTNER_SECTIONS = new Set([0, 8, 10])
 
-function deepMerge(base, override) {
+// UUID pattern
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function parseHouseholdIdFromURL() {
+  const segment = window.location.pathname.replace(/^\//, '').split('/')[0]
+  return UUID_RE.test(segment) ? segment : null
+}
+
+function deepMergeLocal(base, override) {
   if (!override) return base
   const result = { ...base }
   for (const key of Object.keys(override)) {
-    if (
-      override[key] !== null &&
-      typeof override[key] === 'object' &&
-      !Array.isArray(override[key]) &&
-      typeof base[key] === 'object' &&
-      base[key] !== null &&
-      !Array.isArray(base[key])
-    ) {
-      result[key] = deepMerge(base[key], override[key])
+    const ov = override[key]
+    const bv = base[key]
+    if (ov !== null && typeof ov === 'object' && !Array.isArray(ov) &&
+        bv !== null && typeof bv === 'object' && !Array.isArray(bv)) {
+      result[key] = deepMergeLocal(bv, ov)
     } else {
-      result[key] = override[key]
+      result[key] = ov
     }
   }
   return result
 }
 
-export default function App() {
-  const [formData, setFormData] = useState(() => {
-    const saved = loadFromLocalStorage()
-    if (saved) return deepMerge(INITIAL_FORM_DATA, saved)
-    return { ...INITIAL_FORM_DATA, _meta: { ...INITIAL_FORM_DATA._meta, createdAt: new Date().toISOString() } }
-  })
-  const [currentSection, setCurrentSection] = useState(0)
-  const [activePartner, setActivePartner] = useState(0)
-  const [showNarrative, setShowNarrative] = useState(false)
-  const [lastSaved, setLastSaved] = useState(() => getLastSaved())
+// ── Sync status indicator ──────────────────────────────────────────────────
 
-  // Auto-save on every change
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      saveToLocalStorage(formData)
-      setLastSaved(new Date())
-    }, 800)
-    return () => clearTimeout(timer)
-  }, [formData])
+function SyncBadge({ status }) {
+  if (status === 'saved') return (
+    <span className="text-xs text-emerald-600 flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" /> Saved
+    </span>
+  )
+  if (status === 'saving') return (
+    <span className="text-xs text-gray-400 flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 animate-pulse inline-block" /> Saving…
+    </span>
+  )
+  if (status === 'error') return (
+    <span className="text-xs text-red-500 flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block" /> Save failed
+    </span>
+  )
+  return null
+}
 
-  const updateSection = useCallback((sectionKey, value) => {
-    setFormData(prev => ({ ...prev, [sectionKey]: value }))
-  }, [])
+// ── Share button ───────────────────────────────────────────────────────────
 
-  const handleReset = () => {
-    if (window.confirm('This will delete all your saved data and start over. Are you sure?')) {
-      clearLocalStorage()
-      setFormData({ ...INITIAL_FORM_DATA, _meta: { ...INITIAL_FORM_DATA._meta, createdAt: new Date().toISOString() } })
-      setCurrentSection(0)
-      setActivePartner(0)
-      setShowNarrative(false)
-      setLastSaved(null)
+function ShareButton({ householdId }) {
+  const [copied, setCopied] = useState(false)
+  const url = `${window.location.origin}/${householdId}`
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      prompt('Copy this link to share with your partners:', url)
     }
   }
 
+  return (
+    <button
+      onClick={copy}
+      className="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors"
+      title={url}
+    >
+      {copied ? 'Copied!' : 'Share link'}
+    </button>
+  )
+}
+
+// ── Main App ───────────────────────────────────────────────────────────────
+
+export default function App() {
+  // Routing
+  const [householdId, setHouseholdId] = useState(() => parseHouseholdIdFromURL())
+  const [partnerIndex, setPartnerIndex] = useState(() => {
+    const id = parseHouseholdIdFromURL()
+    return id ? getStoredPartner(id) : null
+  })
+
+  // Form state
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA)
+  const [activePartner, setActivePartner] = useState(() => {
+    const id = parseHouseholdIdFromURL()
+    const stored = id ? getStoredPartner(id) : null
+    return stored ?? 0
+  })
+
+  // Async state
+  const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(null)
+  const [syncStatus, setSyncStatus] = useState('saved')
+
+  // Form navigation
+  const [currentSection, setCurrentSection] = useState(0)
+  const [showNarrative, setShowNarrative] = useState(false)
+
+  // Stable refs
+  const sessionId = useRef(crypto.randomUUID())
+  const saveTimer = useRef(null)
+  const unsubscribe = useRef(null)
+
+  // ── Load household on mount ──────────────────────────────────────────────
+  useEffect(() => {
+    if (!householdId || !isConfigured) return
+
+    setLoading(true)
+    loadHousehold(householdId)
+      .then((row) => {
+        if (!row) {
+          setLoadError('Plan not found. The link may be invalid or expired.')
+          return
+        }
+        const merged = deepMergeLocal(INITIAL_FORM_DATA, row.form_data)
+        setFormData(merged)
+        setLoading(false)
+      })
+      .catch((err) => {
+        setLoadError('Could not load plan. Check your connection and refresh.')
+        setLoading(false)
+      })
+  }, [householdId])
+
+  // ── Real-time subscription ───────────────────────────────────────────────
+  useEffect(() => {
+    if (!householdId || !isConfigured) return
+
+    unsubscribe.current = subscribeToHousehold(
+      householdId,
+      sessionId.current,
+      (remoteFormData) => {
+        setFormData(prev => mergeRemoteUpdate(prev, remoteFormData, partnerIndex ?? activePartner))
+      }
+    )
+
+    return () => {
+      if (unsubscribe.current) unsubscribe.current()
+    }
+  }, [householdId, partnerIndex, activePartner])
+
+  // ── Auto-save (debounced 800ms) ──────────────────────────────────────────
+  const scheduleSave = useCallback((data) => {
+    if (!householdId || !isConfigured) return
+    clearTimeout(saveTimer.current)
+    setSyncStatus('saving')
+    saveTimer.current = setTimeout(async () => {
+      try {
+        await saveHousehold(householdId, data, sessionId.current)
+        setSyncStatus('saved')
+      } catch {
+        setSyncStatus('error')
+      }
+    }, 800)
+  }, [householdId])
+
+  const updateSection = useCallback((sectionKey, value) => {
+    setFormData(prev => {
+      const next = { ...prev, [sectionKey]: value }
+      scheduleSave(next)
+      return next
+    })
+  }, [scheduleSave])
+
+  // ── URL management ───────────────────────────────────────────────────────
+  const navigateToHousehold = (id) => {
+    window.history.pushState({}, '', `/${id}`)
+    setHouseholdId(id)
+  }
+
+  // ── Landing page actions ─────────────────────────────────────────────────
+  const handleCreateHousehold = async () => {
+    const id = await createHousehold(INITIAL_FORM_DATA)
+    navigateToHousehold(id)
+    // Don't set partner yet — show PartnerSelect
+  }
+
+  const handleJoinHousehold = async (id) => {
+    const row = await loadHousehold(id)
+    if (!row) throw Object.assign(new Error('NOT_FOUND'), { message: 'NOT_FOUND' })
+    navigateToHousehold(id)
+    const storedPartner = getStoredPartner(id)
+    setPartnerIndex(storedPartner)
+    const merged = deepMergeLocal(INITIAL_FORM_DATA, row.form_data)
+    setFormData(merged)
+  }
+
+  // ── Partner selection ────────────────────────────────────────────────────
+  const handlePartnerSelect = (index) => {
+    storePartner(householdId, index)
+    setPartnerIndex(index)
+    setActivePartner(index)
+  }
+
+  // ── Form navigation ──────────────────────────────────────────────────────
   const goNext = () => {
     if (currentSection < TOTAL_SECTIONS - 1) {
       setCurrentSection(s => s + 1)
@@ -99,6 +250,46 @@ export default function App() {
   const goToSection = (i) => {
     setCurrentSection(i)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // ── Determine current view ───────────────────────────────────────────────
+  if (!householdId || !isConfigured) {
+    return <LandingPage onCreateHousehold={handleCreateHousehold} onJoinHousehold={handleJoinHousehold} />
+  }
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-xl border border-red-200 shadow-sm p-8 text-center">
+          <p className="text-red-600 font-medium mb-4">{loadError}</p>
+          <button onClick={() => { window.history.pushState({}, '', '/'); setHouseholdId(null); setLoadError(null) }}
+            className="btn-secondary">
+            ← Back to start
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-gray-500">Loading your plan…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (partnerIndex === null) {
+    return (
+      <PartnerSelect
+        adults={formData.adults}
+        householdId={householdId}
+        onSelect={handlePartnerSelect}
+      />
+    )
   }
 
   const commonProps = {
@@ -134,7 +325,11 @@ export default function App() {
   if (showNarrative) {
     return (
       <div className="min-h-screen bg-slate-50">
-        <Header lastSaved={lastSaved} onReset={handleReset} />
+        <Header
+          syncBadge={<SyncBadge status={syncStatus} />}
+          shareButton={<ShareButton householdId={householdId} />}
+          onReset={null}
+        />
         <NarrativeDisplay formData={formData} onBack={() => setShowNarrative(false)} />
       </div>
     )
@@ -142,33 +337,34 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Header lastSaved={lastSaved} onReset={handleReset} />
+      <Header
+        syncBadge={<SyncBadge status={syncStatus} />}
+        shareButton={<ShareButton householdId={householdId} />}
+        onReset={null}
+      />
       <ProgressBar currentSection={currentSection} onNavigate={goToSection} />
       <PartnerTabs
         adults={formData.adults}
         activePartner={activePartner}
         onChange={(i) => {
           setActivePartner(i)
-          // If currently on a shared section, stay put; if on a per-partner section, just switch partner
           window.scrollTo({ top: 0, behavior: 'smooth' })
         }}
       />
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Shared-section callout */}
         {!PER_PARTNER_SECTIONS.has(currentSection) && (
           <div className="mb-4 text-xs text-gray-400 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-gray-300 inline-block" />
             Shared section — one response for the whole household
           </div>
         )}
-
         {sections[currentSection]}
       </main>
 
       <footer className="no-print text-center py-8 text-xs text-gray-400">
-        <p>Your data is saved locally in your browser. Nothing is sent to any server.</p>
-        <p className="mt-1">This form is for pre-consultation purposes only and is not legal advice.</p>
+        <p>Your data syncs automatically across all devices.</p>
+        <p className="mt-1">For pre-consultation purposes only — not legal advice.</p>
       </footer>
     </div>
   )

@@ -1,3 +1,4 @@
+import { jsPDF } from 'jspdf'
 import { calculateTotals } from './calculations.js'
 
 export function exportAsJSON(formData) {
@@ -121,8 +122,7 @@ export function exportAsText(formData, narrative) {
 }
 
 export function exportNarrativeAsPDF(narrative, formData) {
-  // Dynamically import jsPDF to avoid bundle issues
-  import('jspdf').then(({ jsPDF }) => {
+  {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
     const margin = 72
     const pageWidth = doc.internal.pageSize.getWidth()
@@ -201,7 +201,7 @@ export function exportNarrativeAsPDF(narrative, formData) {
     }
 
     doc.save(`estate-planning-narrative-${dateStamp()}.pdf`)
-  })
+  }
 }
 
 // ── Helpers ────────────────────────────────────────────────────
